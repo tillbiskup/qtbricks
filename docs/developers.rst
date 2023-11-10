@@ -10,30 +10,34 @@ Virtual environment
 
 The whole development should take place inside a virtual python environment that should be located *outside* the project directory.
 
-To create a new virtual python environment, open a terminal and change to a a directory where the virtual environment should reside. Then type something like::
+To create a new virtual python environment, open a terminal and change to a a directory where the virtual environment should reside. Then type something like:
 
-  virtualenv qtbricks
+.. code-block:: bash
 
-or alternatively::
+    python3 -m venv qtbricks
 
-  python3 -m venv qtbricks
+This will create a virtual environment in the directory "qtbricks". To activate this virtual environment, use:
 
-This will create a virtual environment in the directory "qtbricks". To activate this virtual environment, use::
+.. code-block:: bash
 
-  source qtbricks/bin/activate
+    source qtbricks/bin/activate
 
-To deactivate, the command would simply be::
+To deactivate, the command would simply be:
 
-  deactivate
+.. code-block:: bash
+
+    deactivate
 
 
 Autoincrementing version numbers
 ================================
 
-The version number is contained in the file ``VERSION`` in the project root directory. To automatically increment the version number with every commit, use a git hook that calls the file ``bin/incrementVersion.sh``. Git hooks reside in the directory ``.git/hooks``. The simplest would be to create a new file ``pre-commit`` in this directory with the following content::
+The version number is contained in the file ``VERSION`` in the project root directory. To automatically increment the version number with every commit, use a git hook that calls the file ``bin/incrementVersion.sh``. Git hooks reside in the directory ``.git/hooks``. The simplest would be to create a new file ``pre-commit`` in this directory with the following content:
 
-  #!/bin/sh
-  bash bin/incrementVersion.sh
+.. code-block:: bash
+
+    #!/bin/sh
+    bash bin/incrementVersion.sh
 
 
 Make sure to set it to executable and have a line break (aka: new or empty line) at the end of the file. Otherwise, you man run into trouble, i.e., not having your version number updated automatically with each commit.
@@ -46,15 +50,15 @@ The qtbricks package follows good practice of the Python community regarding dir
 
 (This) documentation resides inside the ``docs`` directory of the project root. The auto-generated :doc:`API documentation <api/index>` is in its own directory.
 
-A general overview of the overall package structure::
+A general overview of the overall package structure:
 
-  bin/
-  qtbricks/
-  docs/
-      api/
-  tests/
+.. code-block:: bash
 
-
+    bin/
+    qtbricks/
+    docs/
+        api/
+    tests/
 
 
 Docstring format
@@ -79,7 +83,9 @@ Setting up the documentation build system
 The documentation is built using `Sphinx <https://sphinx-doc.org/>`_, `Python <https://python.org/>`_. Building requires using a shell, for example ``bash``.
 
 
-To install the necessary Python dependencies, create a virtual environment, e.g., with ``virtualenv <environment>``, and activate it afterwards with ``<environment>/bin/activate``. Then install the dependencies using ``pip``::
+To install the necessary Python dependencies, create a virtual environment, e.g., with ``virtualenv <environment>``, and activate it afterwards with ``<environment>/bin/activate``. Then install the dependencies using ``pip``:
+
+.. code-block:: bash
 
     pip install sphinx
     pip install sphinx-rtd-theme
@@ -101,13 +107,17 @@ To build the documentation for all releases and the current master branch:
 Static code analysis with Prospector
 ====================================
 
-Static code analysis can be performed using `Prospector <http://prospector.landscape.io/en/master/>`_. First, install the necessary tools into the virtual environment created for the qtbricks package::
+Static code analysis can be performed using `Prospector <http://prospector.landscape.io/en/master/>`_. First, install the necessary tools into the virtual environment created for the qtbricks package:
+
+.. code-block:: bash
 
     pip install prospector[with_pyroma]
 
 The optional arguments ensure that all necessary dependencies are installed as well.
 
-Afterwards, simply run Prospector from a terminal from within your project root::
+Afterwards, simply run Prospector from a terminal from within your project root:
+
+.. code-block:: bash
 
     prospector
 

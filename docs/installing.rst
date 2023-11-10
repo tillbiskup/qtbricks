@@ -37,7 +37,7 @@ The good news: Creating Python virtual environments is fairly simple:
 
 .. code-block:: bash
 
-    python -m venv qtbricks
+    python3 -m venv qtbricks
 
 This will create a Python virtual environment named ``qtbricks`` in the current directory. Of course, you can give your virtual environment any name you like. However, be careful with spaces and special characters, depending on your system.
 
