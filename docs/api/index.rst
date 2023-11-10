@@ -12,3 +12,6 @@ An alphabetic list of the modules available within the qtbricks package. The act
 .. toctree::
     :maxdepth: 1
 
+    qtbricks.filebrowser
+    qtbricks.utils
+

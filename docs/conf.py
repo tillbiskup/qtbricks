@@ -226,6 +226,7 @@ intersphinx_mapping = {
     'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
     'matplotlib': ('https://matplotlib.org/stable/', None),
     'aspecd': ('https://docs.aspecd.de/', None),
+    'PySide6': ('https://doc.qt.io/qtforpython-6/', None),
 }
 
 # -- Options for todo extension ----------------------------------------------
