@@ -1,9 +1,11 @@
 Installation
 ============
 
-Installing the qtbricks package is as simple as installing any other Python package, as qtbricks is available from the `Python Package Index (PyPI) <https://www.pypi.org/>`_. Simply open a terminal on your computer and type::
+Installing the qtbricks package is as simple as installing any other Python package, as qtbricks is available from the `Python Package Index (PyPI) <https://www.pypi.org/>`_. Simply open a terminal on your computer and type:
 
-  pip install qtbricks
+.. code-block:: bash
+
+    pip install qtbricks
 
 This will install the qtbricks package (and all its dependencies) on your computer.
 
