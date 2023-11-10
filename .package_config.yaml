@@ -1,0 +1,25 @@
+package:
+  name: 'qtbricks'
+  author: 'Till Biskup'
+  author_email: 'code@till-biskup.de'
+  year: '2023'
+  description: 'Python Qt components: widgets and utils, focussing on scientific GUIs.'
+  urls:
+    main: 'https://pypi.org/project/qtbricks/'
+    documentation: 'https://qtbricks.docs.till-biskup.de/'
+    source: 'https://github.com/tillbiskup/qtbricks'
+  keywords: ['Qt', 'widgets', 'building blocks', 'PySide6']
+  install_requires: ['PySide6', 'matplotlib']
+  license: BSD
+documentation:
+  logo: 'qtbricks-logo.png'
+  favicon: 'favicon.ico'
+  language: en
+options:
+  logging: false
+  git: true
+  gui: false
+gui:
+  splash: true
+  organisation: ''
+  domain: ''
