@@ -87,9 +87,7 @@ import sys
 from PySide6 import QtWidgets
 
 from matplotlib import figure
-from matplotlib.backends.backend_qtagg import (
-    FigureCanvasQTAgg, NavigationToolbar2QT,
-)
+from matplotlib.backends import backend_qtagg as backend
 
 import qtbricks.utils as utils
 
@@ -98,11 +96,35 @@ class Plot(QtWidgets.QWidget):
     """
     Plot widget for including Matplotlib plots in a GUI.
 
+    Besides the actual figure canvas containing the figure, a series of
+    buttons is attached to the top, similar to the default toolbar of a
+    Matplotlib window.
+
+    As the widget exposes two public attributes, :attr:`figure` and
+    :attr:`axes`, plotting should be fairly straight-forward and basically
+    identical to other plots.
+
+    If you need to change the axes, *e.g.* for multiple axes in a figure,
+    this can be achieved by simply clearing the figure and creating new axes
+    via the :meth:`matplotlib.figure.Figure.subplots` method:
+
+    .. code-block::
+
+        widget = Plot()
+        widget.figure.clf()
+        axes = widget.figure.subplots(2, 1)
+
+        axes[0].plot(t, np.sin(t), ".")
+        axes[1].plot(t, np.cos(t), ".")
+
+
     Attributes
     ----------
-    figure : :class:`matplotlib.figure.Figure()`
+    figure : :class:`matplotlib.figure.Figure`
+        Matplotlib figure containing the actual plot
 
-    axes : :class:``
+    axes : :class:`matplotlib.axes.Axes`
+        Matplotlib axes for plotting data
     """
 
     def __init__(self):
@@ -111,8 +133,10 @@ class Plot(QtWidgets.QWidget):
         self.figure = figure_canvas.figure
         self.axes = figure_canvas.axes
 
-        mpl_toolbar = NavigationToolbar2QT(figure_canvas, None)
+        self._setup_ui(figure_canvas)
 
+    def _setup_ui(self, figure_canvas):
+        mpl_toolbar = backend.NavigationToolbar2QT(figure_canvas, None)
         home_button = utils.create_button(
             icon="house.svg",
             shortcut="h",
@@ -129,7 +153,7 @@ class Plot(QtWidgets.QWidget):
             tooltip="Redo last change",
             slot=mpl_toolbar.forward,
         )
-
+        # Button group
         pan_button = utils.create_button(
             icon="arrows-up-down-left-right.svg",
             shortcut="p",
@@ -148,7 +172,7 @@ class Plot(QtWidgets.QWidget):
         pan_zoom_group.addButton(pan_button)
         pan_zoom_group.addButton(zoom_button)
         utils.make_buttons_in_group_uncheckable(pan_zoom_group)
-
+        # /Button group
         subplots_button = utils.create_button(
             icon="chart-line.svg",
             tooltip="Configure subplots",
@@ -164,11 +188,6 @@ class Plot(QtWidgets.QWidget):
             tooltip="Save plot",
             slot=mpl_toolbar.save_figure,
         )
-        detach_button = utils.create_button(
-            icon="share-from-square.svg",
-            tooltip="Detach plot (open additional plot window)",
-            slot=self._default_button_action,
-        )
 
         controls_layout = QtWidgets.QHBoxLayout()
         controls_layout.addWidget(home_button)
@@ -180,8 +199,6 @@ class Plot(QtWidgets.QWidget):
         controls_layout.addWidget(customise_button)
         controls_layout.addWidget(save_button)
         controls_layout.addStretch()
-        controls_layout.addWidget(detach_button)
-
         layout = QtWidgets.QVBoxLayout()
         layout.addLayout(controls_layout)
         layout.addWidget(figure_canvas)
@@ -191,7 +208,20 @@ class Plot(QtWidgets.QWidget):
         pass
 
 
-class _FigureCanvas(FigureCanvasQTAgg):
+class _FigureCanvas(backend.FigureCanvasQTAgg):
+    """
+    Figure canvas containing the Matplotlib figure for use within Qt GUIs.
+
+
+    Attributes
+    ----------
+    figure : :class:`matplotlib.figure.Figure`
+        Matplotlib figure containing the actual plot
+
+    axes : :class:`matplotlib.axes.Axes`
+        Matplotlib axes for plotting data
+
+    """
 
     def __init__(self):
         self.figure = figure.Figure()  # figsize=(width, height), dpi=dpi

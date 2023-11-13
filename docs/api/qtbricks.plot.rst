@@ -5,3 +5,4 @@ qtbricks.plot module
     :members:
     :undoc-members:
     :show-inheritance:
+    :private-members: _FigureCanvas

@@ -170,14 +170,14 @@ class FileBrowser(QtWidgets.QWidget):
         Note that the names may not always appear in the order they have
         been selected.
 
-    cls.selection_changed : :class:`QtCore.Signal`
-        Signal emitted when the selection of items changed.
-
-        The signal contains the selection as :class:`set` parameter.
-
     """
 
     selection_changed = QtCore.Signal(set)
+    """
+    Signal emitted when the selection of items changed.
+
+    The signal contains the selection as :class:`set` parameter.
+    """
 
     def __init__(self, path=""):
         super().__init__()
@@ -313,18 +313,6 @@ class _FileTree(QtWidgets.QTreeView):
     root_path : :class:`str`
         Root path to be set for the file browser
 
-    Attributes
-    ----------
-    cls.root_path_changed : :class:`QtCore.Signal`
-        Signal emitted when the root path of the underlying model changed.
-
-        The signal contains the new root path as :class:`str` parameter.
-
-    cls.selection_changed : :class:`QtCore.Signal`
-        Signal emitted when the selection of items changed.
-
-        The signal contains the selection as :class:`set` parameter.
-
 
     .. todo::
         Properly handle hiding of columns, using :meth:`self.hideColumn(#)`.
@@ -341,7 +329,18 @@ class _FileTree(QtWidgets.QTreeView):
     """
 
     root_path_changed = QtCore.Signal(str)
+    """
+    Signal emitted when the root path of the underlying model changed.
+
+    The signal contains the new root path as :class:`str` parameter.
+    """
+
     selection_changed = QtCore.Signal(set)
+    """
+    Signal emitted when the selection of items changed.
+
+    The signal contains the selection as :class:`set` parameter.
+    """
 
     def __init__(self, root_path=""):
         super().__init__()

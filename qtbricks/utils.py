@@ -38,8 +38,8 @@ def image_path(name='', icon_dir='images'):
     return path
 
 
-def create_button(text="", slot=None, shortcut=None, icon=None, checkable=False,
-                  tooltip=None):
+def create_button(text="", slot=None, shortcut="", icon="", checkable=False,
+                  tooltip=""):
     """
     Conveniently create a button.
 
@@ -54,7 +54,7 @@ def create_button(text="", slot=None, shortcut=None, icon=None, checkable=False,
 
         Default: empty
 
-    slot : :class:``
+    slot : :py:obj:`function <types.FunctionType>`
         The slot to connect to the button.
 
     shortcut : :class:`str`
@@ -62,7 +62,7 @@ def create_button(text="", slot=None, shortcut=None, icon=None, checkable=False,
 
         Default: empty
 
-    icon : class:`str`
+    icon : :class:`str`
         The name of the icon file to be used.
 
         If empty, no icon will be displayed.
@@ -90,6 +90,8 @@ def create_button(text="", slot=None, shortcut=None, icon=None, checkable=False,
     if shortcut:
         button.setShortcut(shortcut)
     if tooltip:
+        if shortcut:
+            tooltip = '\n'.join([tooltip, f'Keyboard shortcut: {shortcut}'])
         button.setToolTip(tooltip)
     if slot:
         button.pressed.connect(slot)
