@@ -18,5 +18,7 @@ For later versions
 
 * Property editor widget
 
+* Help window with help texts generated via Sphinx and displayed as HTML with links
+
 * General utils and programming advice for GUIs with PySide6
 
