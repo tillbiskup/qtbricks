@@ -165,6 +165,8 @@ class FileBrowser(QtWidgets.QWidget):
     selection : :class:`set`
         Names of the currently selected files
 
+        The names are the actual full paths to the file on the file system.
+
         Note that the names may not always appear in the order they have
         been selected.
 

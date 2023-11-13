@@ -4,6 +4,8 @@ utils module of the qtbricks package.
 
 import os
 
+from PySide6 import QtWidgets, QtGui
+
 
 def image_path(name='', icon_dir='images'):
     """
@@ -34,3 +36,14 @@ def image_path(name='', icon_dir='images'):
     basedir = os.path.dirname(__file__)
     path = os.path.join(basedir, icon_dir, name)
     return path
+
+
+def add_button(text="", slot=None, shortcut=None, icon=None, tooltip=None):
+    button = QtWidgets.QPushButton(text)
+    if icon:
+        button.setIcon(QtGui.QIcon(image_path(icon)))
+    if tooltip:
+        button.setToolTip(tooltip)
+    if slot:
+        button.pressed.connect(slot)
+    return button

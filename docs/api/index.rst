@@ -13,5 +13,6 @@ An alphabetic list of the modules available within the qtbricks package. The act
     :maxdepth: 1
 
     qtbricks.filebrowser
+    qtbricks.plot
     qtbricks.utils
 
