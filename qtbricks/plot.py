@@ -86,7 +86,7 @@ import sys
 # Import PySide6 before matplotlib
 from PySide6 import QtWidgets
 
-from matplotlib import figure
+from matplotlib import figure, widgets
 from matplotlib.backends import backend_qtagg as backend
 
 import qtbricks.utils as utils
@@ -133,6 +133,8 @@ class Plot(QtWidgets.QWidget):
         self.figure = figure_canvas.figure
         self.axes = figure_canvas.axes
 
+        self._cursor = None
+
         self._setup_ui(figure_canvas)
 
     def _setup_ui(self, figure_canvas):
@@ -173,6 +175,13 @@ class Plot(QtWidgets.QWidget):
         pan_zoom_group.addButton(zoom_button)
         utils.make_buttons_in_group_uncheckable(pan_zoom_group)
         # /Button group
+        self._crosshair_button = utils.create_button(
+            icon="plus.svg",
+            shortcut="x",
+            tooltip="Show crosshair cursor",
+            slot=self._crosshair_button_action,
+            checkable=True,
+        )
         subplots_button = utils.create_button(
             icon="chart-line.svg",
             tooltip="Configure subplots",
@@ -195,6 +204,7 @@ class Plot(QtWidgets.QWidget):
         controls_layout.addWidget(forward_button)
         controls_layout.addWidget(zoom_button)
         controls_layout.addWidget(pan_button)
+        controls_layout.addWidget(self._crosshair_button)
         controls_layout.addWidget(subplots_button)
         controls_layout.addWidget(customise_button)
         controls_layout.addWidget(save_button)
@@ -204,8 +214,20 @@ class Plot(QtWidgets.QWidget):
         layout.addWidget(figure_canvas)
         self.setLayout(layout)
 
-    def _default_button_action(self):
-        pass
+    def _crosshair_button_action(self):
+        if self._crosshair_button.isChecked():
+            self._cursor = None
+            self.figure.canvas.restore_region(self._background)
+            self.figure.canvas.blit(self.figure.bbox)
+        else:
+            self._background = \
+                self.figure.canvas.copy_from_bbox(self.figure.bbox)
+            if not self._cursor:
+                self._cursor = widgets.MultiCursor(
+                    None, self.axes, useblit=False, horizOn=True, vertOn=True,
+                    color='red', linewidth=1,
+                )
+            #self._cursor.useblit=True
 
 
 class _FigureCanvas(backend.FigureCanvasQTAgg):
@@ -244,8 +266,8 @@ class _MainWindow(QtWidgets.QMainWindow):
 
         widget.figure.clf()
 
-        axes = widget.figure.subplots(2, 1)
-        axes[0].plot(t, np.sin(t), ".")
+        widget.axes = widget.figure.subplots(2, 1)
+        widget.axes[0].plot(t, np.sin(t), ".")
 
         self.show()
 
