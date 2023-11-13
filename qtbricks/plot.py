@@ -216,6 +216,10 @@ class Plot(QtWidgets.QWidget):
 
     def _crosshair_button_action(self):
         if self._crosshair_button.isChecked():
+            for hline in self._cursor.hlines:
+                hline.remove()
+            for vline in self._cursor.vlines:
+                vline.remove()
             self._cursor = None
             self.figure.canvas.restore_region(self._background)
             self.figure.canvas.blit(self.figure.bbox)
@@ -227,7 +231,6 @@ class Plot(QtWidgets.QWidget):
                     None, self.axes, useblit=False, horizOn=True, vertOn=True,
                     color='red', linewidth=1,
                 )
-            #self._cursor.useblit=True
 
 
 class _FigureCanvas(backend.FigureCanvasQTAgg):
