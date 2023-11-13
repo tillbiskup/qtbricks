@@ -95,6 +95,15 @@ import qtbricks.utils as utils
 
 
 class Plot(QtWidgets.QWidget):
+    """
+    Plot widget for including Matplotlib plots in a GUI.
+
+    Attributes
+    ----------
+    figure : :class:`matplotlib.figure.Figure()`
+
+    axes : :class:``
+    """
 
     def __init__(self):
         super().__init__()
@@ -104,50 +113,61 @@ class Plot(QtWidgets.QWidget):
 
         mpl_toolbar = NavigationToolbar2QT(figure_canvas, None)
 
-        home_button = utils.add_button(
+        home_button = utils.create_button(
             icon="house.svg",
+            shortcut="h",
             tooltip="Reset plot to default settings",
-            slot=mpl_toolbar.home
+            slot=mpl_toolbar.home,
         )
-        back_button = utils.add_button(
+        back_button = utils.create_button(
             icon="backward-step.svg",
             tooltip="Undo last change",
-            slot=mpl_toolbar.back
+            slot=mpl_toolbar.back,
         )
-        forward_button = utils.add_button(
+        forward_button = utils.create_button(
             icon="forward-step.svg",
             tooltip="Redo last change",
-            slot=mpl_toolbar.forward
+            slot=mpl_toolbar.forward,
         )
-        pan_button = utils.add_button(
+
+        pan_button = utils.create_button(
             icon="arrows-up-down-left-right.svg",
+            shortcut="p",
             tooltip="Pan plot",
-            slot=mpl_toolbar.pan
+            slot=mpl_toolbar.pan,
+            checkable=True,
         )
-        zoom_button = utils.add_button(
+        zoom_button = utils.create_button(
             icon="magnifying-glass.svg",
+            shortcut="z",
             tooltip="Zoom plot",
-            slot=mpl_toolbar.zoom
+            slot=mpl_toolbar.zoom,
+            checkable=True,
         )
-        subplots_button = utils.add_button(
+        pan_zoom_group = QtWidgets.QButtonGroup(self)
+        pan_zoom_group.addButton(pan_button)
+        pan_zoom_group.addButton(zoom_button)
+        utils.make_buttons_in_group_uncheckable(pan_zoom_group)
+
+        subplots_button = utils.create_button(
             icon="chart-line.svg",
             tooltip="Configure subplots",
-            slot=mpl_toolbar.configure_subplots
+            slot=mpl_toolbar.configure_subplots,
         )
-        customise_button = utils.add_button(
+        customise_button = utils.create_button(
             icon="sliders.svg",
             tooltip="Customise plot appearance",
-            slot=mpl_toolbar.edit_parameters
+            slot=mpl_toolbar.edit_parameters,
         )
-        save_button = utils.add_button(
+        save_button = utils.create_button(
             icon="floppy-disk.svg",
             tooltip="Save plot",
-            slot=mpl_toolbar.save_figure
+            slot=mpl_toolbar.save_figure,
         )
-        detach_button = utils.add_button(
+        detach_button = utils.create_button(
             icon="share-from-square.svg",
             tooltip="Detach plot (open additional plot window)",
-            slot=self._default_button_action
+            slot=self._default_button_action,
         )
 
         controls_layout = QtWidgets.QHBoxLayout()
