@@ -12,6 +12,8 @@ For version 0.1
 
 * Plot widget
 
+* Main window with basic functionality
+
 
 For later versions
 ==================

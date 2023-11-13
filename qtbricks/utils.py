@@ -94,7 +94,10 @@ def create_button(text="", slot=None, shortcut="", icon="", checkable=False,
             tooltip = '\n'.join([tooltip, f'Keyboard shortcut: {shortcut}'])
         button.setToolTip(tooltip)
     if slot:
-        button.pressed.connect(slot)
+        if checkable:
+            button.toggled.connect(slot)
+        else:
+            button.pressed.connect(slot)
     if checkable:
         button.setCheckable(True)
     return button

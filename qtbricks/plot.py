@@ -117,25 +117,51 @@ class Plot(QtWidgets.QWidget):
         axes[0].plot(t, np.sin(t), ".")
         axes[1].plot(t, np.cos(t), ".")
 
-
-    Attributes
-    ----------
-    figure : :class:`matplotlib.figure.Figure`
-        Matplotlib figure containing the actual plot
-
-    axes : :class:`matplotlib.axes.Axes`
-        Matplotlib axes for plotting data
     """
 
     def __init__(self):
         super().__init__()
-        figure_canvas = _FigureCanvas()
-        self.figure = figure_canvas.figure
-        self.axes = figure_canvas.axes
+        self._canvas = _FigureCanvas()
 
-        self._cursor = None
+        self._setup_ui(self._canvas)
 
-        self._setup_ui(figure_canvas)
+    @property
+    def figure(self):
+        """
+        Matplotlib figure containing the actual plot.
+
+        You can use this property to both, query and set all properties of
+        the corresponding figure.
+
+        Returns
+        -------
+        figure : :class:`matplotlib.figure.Figure`
+
+        """
+        return self._canvas.figure
+
+    @property
+    def axes(self):
+        """
+        Matplotlib axes for plotting data.
+
+        You can use this axes to directly plot to them, as you can do with
+        any other Matplotlib axes.
+
+        Furthermore, you can (re)set these axes, in case you need to have
+        several axes in one figure. In this case, the axes will be set for
+        the underlying :class:`_FigureCanvas` object.
+
+        Returns
+        -------
+        axes : :class:`matplotlib.axes.Axes`
+
+        """
+        return self._canvas.axes
+
+    @axes.setter
+    def axes(self, axes):
+        self._canvas.axes = axes
 
     def _setup_ui(self, figure_canvas):
         mpl_toolbar = backend.NavigationToolbar2QT(figure_canvas, None)
@@ -170,18 +196,19 @@ class Plot(QtWidgets.QWidget):
             slot=mpl_toolbar.zoom,
             checkable=True,
         )
-        pan_zoom_group = QtWidgets.QButtonGroup(self)
-        pan_zoom_group.addButton(pan_button)
-        pan_zoom_group.addButton(zoom_button)
-        utils.make_buttons_in_group_uncheckable(pan_zoom_group)
-        # /Button group
-        self._crosshair_button = utils.create_button(
+        crosshair_button = utils.create_button(
             icon="plus.svg",
             shortcut="x",
             tooltip="Show crosshair cursor",
-            slot=self._crosshair_button_action,
+            slot=self._canvas.toggle_crosshair_cursor,
             checkable=True,
         )
+        toggle_group = QtWidgets.QButtonGroup(self)
+        toggle_group.addButton(pan_button)
+        toggle_group.addButton(zoom_button)
+        toggle_group.addButton(crosshair_button)
+        utils.make_buttons_in_group_uncheckable(toggle_group)
+        # /Button group
         subplots_button = utils.create_button(
             icon="chart-line.svg",
             tooltip="Configure subplots",
@@ -204,7 +231,7 @@ class Plot(QtWidgets.QWidget):
         controls_layout.addWidget(forward_button)
         controls_layout.addWidget(zoom_button)
         controls_layout.addWidget(pan_button)
-        controls_layout.addWidget(self._crosshair_button)
+        controls_layout.addWidget(crosshair_button)
         controls_layout.addWidget(subplots_button)
         controls_layout.addWidget(customise_button)
         controls_layout.addWidget(save_button)
@@ -213,24 +240,6 @@ class Plot(QtWidgets.QWidget):
         layout.addLayout(controls_layout)
         layout.addWidget(figure_canvas)
         self.setLayout(layout)
-
-    def _crosshair_button_action(self):
-        if self._crosshair_button.isChecked():
-            for hline in self._cursor.hlines:
-                hline.remove()
-            for vline in self._cursor.vlines:
-                vline.remove()
-            self._cursor = None
-            self.figure.canvas.restore_region(self._background)
-            self.figure.canvas.blit(self.figure.bbox)
-        else:
-            self._background = \
-                self.figure.canvas.copy_from_bbox(self.figure.bbox)
-            if not self._cursor:
-                self._cursor = widgets.MultiCursor(
-                    None, self.axes, useblit=False, horizOn=True, vertOn=True,
-                    color='red', linewidth=1,
-                )
 
 
 class _FigureCanvas(backend.FigureCanvasQTAgg):
@@ -252,6 +261,28 @@ class _FigureCanvas(backend.FigureCanvasQTAgg):
         self.figure = figure.Figure()  # figsize=(width, height), dpi=dpi
         self.axes = self.figure.add_subplot(111)
         super().__init__(self.figure)
+
+        self._cursor = None
+        self._background = None
+
+    def toggle_crosshair_cursor(self):
+        if self._cursor:
+            for hline in self._cursor.hlines:
+                hline.remove()
+            for vline in self._cursor.vlines:
+                vline.remove()
+            self._cursor = None
+            # noinspection PyUnresolvedReferences
+            self.restore_region(self._background)
+            self.blit(self.figure.bbox)
+        else:
+            # noinspection PyUnresolvedReferences
+            self._background = \
+                self.figure.canvas.copy_from_bbox(self.figure.bbox)
+            self._cursor = widgets.MultiCursor(
+                None, self.axes, useblit=False, horizOn=True, vertOn=True,
+                color='red', linewidth=1,
+            )
 
 
 class _MainWindow(QtWidgets.QMainWindow):
