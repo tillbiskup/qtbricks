@@ -4,9 +4,9 @@ qtbricks
 
 *Python Qt components: widgets and utils, focussing on scientific GUIs.*
 
-Welcome! This is the documentation for qtbricks, a Python package collecting a growing series of "real-world" GUI widgets and related tools written with and for PySide6, the official Python bindings for Qt6.
+Welcome! This is the documentation for qtbricks, a Python package collecting a growing series of "real-world" **GUI widgets** and related tools written with and for **PySide6**, the official Python bindings for Qt6.
 
-Do you want or need to create complex GUIs with Python and Qt but don't want to spend too much time reimplementing seemingly basic widgets and functionality? Are you overwhelmed by the complexity of GUI programming and just want to focus on the actual tasks that need to get done? So do we, and that's how qtbricks was born. Separate the GUI from the business logic in your code, provide a series of high-level GUI widgets for (admittedly complex) standard tasks, focus on as readable and as Pythonic code as possible.
+Do you want or need to create complex GUIs with Python and Qt but don't want to spend too much time reimplementing seemingly basic widgets and functionality? Are you overwhelmed by the complexity of GUI programming and just want to focus on the actual tasks that need to get done? So do we, and that's how qtbricks was born. **Separate the GUI from the business logic** in your code, provide a series of high-level GUI widgets for (admittedly complex) standard tasks, **focus on as readable and as Pythonic code as possible**. And yes, it has a clear focus on **GUIs for scientific data analysis** tasks.
 
 
 Features
@@ -52,6 +52,11 @@ License
 
 This program is free software: you can redistribute it and/or modify it under the terms of the **BSD License**.
 
+
+A note on the logo and name
+===========================
+
+Why "qtbricks"? What is in a name? A name should answer the important questions (What is it? What does it?), should be easy to remember and reasonably unique to be searchable (findable!) on the web. Bricks are basic building blocks, more generic than the term "widget" in a GUI context, and after all, bricks seem to have a natural connection to windows, haven't they? Hence the logo...
 
 
 .. toctree::
