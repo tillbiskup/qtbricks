@@ -279,8 +279,12 @@ class _FigureCanvas(backend.FigureCanvasQTAgg):
             # noinspection PyUnresolvedReferences
             self._background = \
                 self.figure.canvas.copy_from_bbox(self.figure.bbox)
+            if isinstance(self.axes, list):
+                axes = self.axes
+            else:
+                axes = [self.axes]
             self._cursor = widgets.MultiCursor(
-                None, self.axes, useblit=False, horizOn=True, vertOn=True,
+                None, axes, useblit=False, horizOn=True, vertOn=True,
                 color='red', linewidth=1,
             )
 
