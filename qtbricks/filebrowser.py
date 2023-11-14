@@ -82,6 +82,8 @@ settings into separate methods.
 Communication with the outside world beyond the widget primarily takes place
 via the Qt signal--slot mechanism.
 
+.. todo::
+    Implement filters for files
 
 .. todo::
     Try to reimplement buttons and edit as a Qt toolbar with respective actions

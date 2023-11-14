@@ -96,7 +96,7 @@ class Plot(QtWidgets.QWidget):
     """
     Plot widget for including Matplotlib plots in a GUI.
 
-    Besides the actual figure canvas containing the figure, a series of
+    Besides, the actual figure canvas containing the figure, a series of
     buttons is attached to the top, similar to the default toolbar of a
     Matplotlib window.
 
