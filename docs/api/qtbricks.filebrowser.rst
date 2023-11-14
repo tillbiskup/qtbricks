@@ -6,3 +6,4 @@ qtbricks.filebrowser module
     :undoc-members:
     :show-inheritance:
     :private-members: _FileTree
+    :exclude-members: staticMetaObject
