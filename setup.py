@@ -48,4 +48,5 @@ setuptools.setup(
         'docs': ['sphinx', 'sphinx-rtd-theme', 'sphinx_multiversion'],
     },
     python_requires='>=3.7',
+    include_package_data=True,
 )
