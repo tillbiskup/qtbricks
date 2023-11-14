@@ -1,5 +1,10 @@
 """
-utils module of the qtbricks package.
+General utils of the qtbricks package.
+
+Mostly small functions that are more general and get used in the other
+modules. Some of these functions may be useful for packages importing
+qtbricks, hence generally the individual functions are designed with
+reusability beyond the qtbricks package in mind.
 """
 
 import os
@@ -7,7 +12,7 @@ import os
 from PySide6 import QtWidgets, QtGui
 
 
-def image_path(name='', icon_dir='images'):
+def image_path(name='', image_dir='images', base_dir=''):
     """
     Return full path to a given image.
 
@@ -18,23 +23,34 @@ def image_path(name='', icon_dir='images'):
     If the internal organisation of images changes, only this code needs to
     be adapted.
 
+    For use with own packages, you may want to set the parameter
+    ``base_dir`` accordingly.
+
     Parameters
     ----------
     name : :class:`str`
         Name of the icon
 
-    icon_dir : :class:`str`
+    image_dir : :class:`str`
         Directory containing the icons
 
         Default: "images"
+
+    base_dir : :class:`str`
+        Directory used as base for the icons directory
+
+        Useful in cases where the function should be used outside this
+        package, *i.e.* with a different base directory for the images.
+
+        Default: ``os.path.dirname(__file__)``
 
     Returns
     -------
     path : :class:`str`
         Full path to the icon
     """
-    basedir = os.path.dirname(__file__)
-    path = os.path.join(basedir, icon_dir, name)
+    base_dir = base_dir or os.path.dirname(__file__)
+    path = os.path.join(base_dir, image_dir, name)
     return path
 
 
