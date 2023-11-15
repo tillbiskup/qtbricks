@@ -83,18 +83,18 @@ Communication with the outside world beyond the widget primarily takes place
 via the Qt signal--slot mechanism.
 
 .. todo::
-    Implement filters for files
-
-.. todo::
     Try to reimplement buttons and edit as a Qt toolbar with respective actions
     that can even be added to an external window?
 
 .. todo::
-    Provide (sensible) minimumSizeHint for FileBrowser widget.
-
-.. todo::
     Try to reimplement toolbar/buttons&edit such that the edit moves in a
     second line if the widget gets too narrow.
+
+.. todo::
+    Provide (sensible) minimumSizeHint for FileBrowser widget.
+
+    Depending on the context the widget is used in, this seems not
+    necessary... Hence, lower priority.
 
 
 Module documentation
@@ -189,6 +189,7 @@ class FileBrowser(QtWidgets.QWidget):
 
         self._previous_path = ''
         self._next_path = ''
+        self._model_settings = {}
 
         self._home_button = QtWidgets.QPushButton()
         self._back_button = QtWidgets.QPushButton()
@@ -199,6 +200,50 @@ class FileBrowser(QtWidgets.QWidget):
 
         self._setup_ui()
         self._update_ui()
+
+    @property
+    def model_settings(self):
+        """
+        Settings for the underlying QFileSystemModel.
+
+        Often, when browsing the file system, we want to control (and
+        restrict) what is displayed how. To this end, settings for the
+        underlying model need to be set.
+
+        The settings are contained in a :class:`dict` that supports the
+        following fields:
+
+        filters : :class:`list`
+            A list of strings to be used for filtering the files.
+
+            Typical use cases would be filters for file extensions, such as
+            ``*.py`` or ``*.png``.
+
+            The QFileSystemModel class only supports basic wildcard
+            filtering, so you will need to use a ``QSortFilterProxyModel`` to
+            get fully customisable filtering. Note however, that the latter
+            is currently *not* implemented.
+
+            See https://stackoverflow.com/questions/72587813 for inspiration.
+
+        filter_disables : :class:`bool`
+            Whether files filtered with the above filter are displayed.
+
+            The standard handling of the QFileSystemModel is to only
+            disable, but not hide the filtered out entries. Set to ``False`` in
+            case you want to *hide* the entries entirely.
+
+        Returns
+        -------
+        model_settings : :class:`dict`
+            Settings for the underlying QFileSystemModel
+        """
+        return self._model_settings
+
+    @model_settings.setter
+    def model_settings(self, settings):
+        self._model_settings = settings
+        self._tree_view.apply_settings(self._model_settings)
 
     def _setup_ui(self):
         self._set_widget_properties()
@@ -469,6 +514,12 @@ class _FileTree(QtWidgets.QTreeView):
             selected_rows.add(self._model.filePath(index))
         self.selection_changed.emit(selected_rows)
         super().selectionChanged(selected, deselected)
+
+    def apply_settings(self, model_settings):
+        if 'filters' in model_settings:
+            self._model.setNameFilters(model_settings['filters'])
+        if 'filter_disables' in model_settings:
+            self._model.setNameFilterDisables(model_settings['filter_disables'])
 
 
 class _MainWindow(QtWidgets.QMainWindow):
