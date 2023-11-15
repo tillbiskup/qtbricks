@@ -14,6 +14,9 @@ For version 0.1
 
 * Main window with basic functionality
 
+  * Modularise save/restore settings, easily allow to add settings in subclasses
+  * Modularise Help->About window
+
 
 For later versions
 ==================
