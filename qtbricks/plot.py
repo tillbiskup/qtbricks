@@ -163,6 +163,32 @@ class Plot(QtWidgets.QWidget):
     def axes(self, axes):
         self._canvas.axes = axes
 
+    def refresh(self, force=False):
+        """
+        Refresh figure canvas.
+
+        After each change in a plot, the canvas needs to be updated. While
+        the matplotlib.pyplot interface takes care of this, using matplotlib
+        from within a GUI sometimes requires to take care of this yourself.
+
+        Parameters
+        ----------
+        force : :class:`bool`
+            Whether to force a new draw of the canvas.
+
+            There are two ways to refresh a canvas: force an immediate draw
+            using :meth:`matplotlib.backend_bases.FigureCanvasBase.draw` and
+            a more gentle draw once control returns to the GUI event loop
+            using :meth:`matplotlib.backend_bases.FigureCanvasBase.draw_idle`.
+
+            Default: False
+
+        """
+        if force:
+            self._canvas.draw()
+        else:
+            self._canvas.draw_idle()
+
     def _setup_ui(self, figure_canvas):
         mpl_toolbar = backend.NavigationToolbar2QT(figure_canvas, None)
         home_button = utils.create_button(
