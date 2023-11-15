@@ -83,8 +83,8 @@ Communication with the outside world beyond the widget primarily takes place
 via the Qt signal--slot mechanism.
 
 .. todo::
-    Try to reimplement buttons and edit as a Qt toolbar with respective actions
-    that can even be added to an external window?
+    Try to reimplement buttons and edit as a Qt toolbar with respective
+    actions that can even be added to an external window?
 
 .. todo::
     Try to reimplement toolbar/buttons&edit such that the edit moves in a
@@ -114,10 +114,10 @@ class FileBrowser(QtWidgets.QWidget):
     """
     File browser widget for selecting (multiple) files from a directory tree.
 
-    Sometimes we need a convenient file browser widget displaying a directory as
-    tree and allowing to both, navigate through the directory hierarchy and to
-    select (multiple) files. All we are usually interested in is the (full) file
-    names of the selected files.
+    Sometimes we need a convenient file browser widget displaying a
+    directory as tree and allowing to both, navigate through the directory
+    hierarchy and to select (multiple) files. All we are usually
+    interested in is the (full) file names of the selected files.
 
     At the core of the widget is a tree view (a :class:`_FileTree` object),
     but for the convenience of the user, a series of additional control
@@ -149,7 +149,8 @@ class FileBrowser(QtWidgets.QWidget):
     is possible as well, holding the "Ctrl" key and using the "Space" key to
     toggle selection of the current item.
 
-    Double-clicking on a directory will change the root path to this directory.
+    Double-clicking on a directory will change the root path to this
+    directory.
 
     Currently, the class has no public methods and only two public
     attributes and a signal documented below.
@@ -164,13 +165,13 @@ class FileBrowser(QtWidgets.QWidget):
     root_path : :class:`str`
         Root path set currently for the file browser
 
-    selection : :class:`set`
+    selection : :class:`list`
         Names of the currently selected files
 
         The names are the actual full paths to the file on the file system.
 
-        Note that the names may not always appear in the order they have
-        been selected.
+        Thanks to using a list, the names should always appear in the order
+        they have been selected.
 
     """
 
@@ -185,7 +186,7 @@ class FileBrowser(QtWidgets.QWidget):
         super().__init__()
 
         self.root_path = path or os.path.abspath(os.path.curdir)
-        self.selection = set()
+        self.selection = []
 
         self._previous_path = ''
         self._next_path = ''
@@ -230,13 +231,24 @@ class FileBrowser(QtWidgets.QWidget):
             Whether files filtered with the above filter are displayed.
 
             The standard handling of the QFileSystemModel is to only
-            disable, but not hide the filtered out entries. Set to ``False`` in
-            case you want to *hide* the entries entirely.
+            disable, but not hide the filtered out entries. Set to
+            ``False`` in case you want to *hide* the entries entirely.
 
         Returns
         -------
         model_settings : :class:`dict`
             Settings for the underlying QFileSystemModel
+
+
+        Note
+        ----
+
+        The reason for this attribute to be a property is simple,
+        yet deserves a comment for developers: You need to be able to
+        set/alter the model settings after you have instantiated the
+        class. Therefore, upon changing the settings, an internal method
+        is called taking care of applying your settings to the model.
+
         """
         return self._model_settings
 
@@ -252,11 +264,12 @@ class FileBrowser(QtWidgets.QWidget):
 
     def _set_widget_properties(self):
         self._home_button.setIcon(QtGui.QIcon(utils.image_path('house.svg')))
-        # _home_button = QtWidgets.QPushButton(QtWidgets.QStyle.SP_DirHomeIcon)
         self._home_button.setToolTip(
             'Go to the home directory of the current user'
         )
-        self._up_button.setIcon(QtGui.QIcon(utils.image_path('circle-up.svg')))
+        self._up_button.setIcon(
+            QtGui.QIcon(utils.image_path('circle-up.svg'))
+        )
         self._up_button.setToolTip('Go one directory up in the hierarchy')
         self._back_button.setIcon(
             QtGui.QIcon(utils.image_path('circle-left.svg')))
@@ -301,7 +314,7 @@ class FileBrowser(QtWidgets.QWidget):
         else:
             self._curdir_edit.setText(self.root_path)
 
-    def _change_selection(self, selection: set):
+    def _change_selection(self, selection: list):
         self.selection_changed.emit(selection)
         self.selection = selection
 
@@ -351,7 +364,8 @@ class _FileTree(QtWidgets.QTreeView):
     clicking. In the same way, you can deselect a given file. Pressing the
     "Shift" key when clicking selects a range of files.
 
-    Double-clicking on a directory will change the root path to this directory.
+    Double-clicking on a directory will change the root path to this
+    directory.
 
     The class emits two signals described below.
 
@@ -379,17 +393,17 @@ class _FileTree(QtWidgets.QTreeView):
     The signal contains the new root path as :class:`str` parameter.
     """
 
-    selection_changed = QtCore.Signal(set)
+    selection_changed = QtCore.Signal(list)
     """
     Signal emitted when the selection of items changed.
 
-    The signal contains the selection as :class:`set` parameter.
+    The signal contains the selection as :class:`list` parameter.
     """
 
     def __init__(self, root_path=""):
         super().__init__()
         self._root_path = root_path
-        self._model = _FileSystemModel()  # QtWidgets.QFileSystemModel()
+        self._model = _FileSystemModel()
         self._setup_ui()
 
     def _setup_ui(self):
@@ -508,9 +522,11 @@ class _FileTree(QtWidgets.QTreeView):
             Deselected item
 
         """
-        selected_rows = set()
+        selected_rows = []
         for index in self.selectedIndexes():
-            selected_rows.add(self._model.filePath(index))
+            item = self._model.filePath(index)
+            if item not in selected_rows:
+                selected_rows.append(item)
         self.selection_changed.emit(selected_rows)
         super().selectionChanged(selected, deselected)
 
@@ -518,13 +534,38 @@ class _FileTree(QtWidgets.QTreeView):
         if 'filters' in model_settings:
             self._model.setNameFilters(model_settings['filters'])
         if 'filter_disables' in model_settings:
-            self._model.setNameFilterDisables(model_settings['filter_disables'])
+            self._model.setNameFilterDisables(
+                model_settings['filter_disables']
+            )
 
 
 class _FileSystemModel(QtWidgets.QFileSystemModel):
+    """
+    Model of the file system used in the tree view.
 
-    # noinspection PyUnresolvedReferences
+    Basically, the class is identical to its base class, currently just
+    adding the relevant code for displaying tooltips.
+    """
+
+    # noinspection PyUnresolvedReferences,PyMethodOverriding
     def data(self, index, role):
+        """
+        Text or else used to display the selected item in the given context.
+
+        Parameters
+        ----------
+        index : :class:`QtCore.QModelIndex`
+            Index of the selected item
+
+        role : :class:`int`
+            The Qt role deciding about the context
+
+        Returns
+        -------
+        data : :class:`Any`
+            Data used to display the item
+
+        """
         if role == QtCore.Qt.ToolTipRole:
             return super().data(index, QtCore.Qt.DisplayRole)
         else:
