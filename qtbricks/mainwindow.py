@@ -6,10 +6,83 @@ the default parts provided by the Qt framework, namely menu bar and toolbars
 at the top, status bar at the bottom, and areas for dockable windows/widgets
 on all four sides of the central widget.
 
+While the actual contents of both, the central widget and the dock areas
+and the other components are more or less unique for your application,
+a main window of a GUI comes with a lot of features and basic
+functionality that are rather general. Hence you can greatly reduce the
+amount of code to write when inheriting from the :class:`MainWindow` class
+implemented here.
+
+.. note::
+
+    Some ideas are borrowed and adapted from Mark Summerfield and his
+    excellent book "Rapid GUI Programming with Python and Qt" (Prentice
+    Hall, Upper Saddle River, 2008). While written for Python 2 and PyQt4,
+    both the concepts and the thorough introduction to GUI programming are
+    probably still the best that is available for creating GUIs with
+    Python and Qt.
+
+
+How to call and where to instantiate
+====================================
+
 Rather than creating an instance of :class:`MainWindow` yourself, you will
 usually call the :func:`app.main` function of the :mod:`app` module,
 or simply call the GUI by means of the respective gui_scripts entry point
 defined in ``setup.py``.
+
+An example of an :mod:`app` module is shown below:
+
+.. code-block::
+
+    import sys
+
+    from PySide6.QtWidgets import QApplication
+    from PySide6.QtGui import QIcon
+
+    from qtbricks import mainwindow, utils
+
+
+    def main():
+        app = QApplication(sys.argv)
+        app.setOrganizationName("demoapp")
+        app.setOrganizationDomain("example.org")
+        app.setApplicationName("Demo application")
+        app.setWindowIcon(QIcon(utils.image_path("icon.svg")))
+    
+        window = mainwindow.MainWindow()
+        window.show()
+        app.exec()
+    
+    
+    if __name__ == "__main__":
+        main()
+
+
+Note that the setting of the organisation name
+(``app.setOrganizationName()``) is crucial for storing settings, as this
+determines the name of the directory the settings are stored under. The
+exact location of the configuration depends on your operating system.
+
+The corresponding section in the ``setup.py`` file with the gui entrypoint
+may look similar to the following:
+
+.. code-block::
+
+    setuptools.setup(
+        # ...
+        entry_points={
+            "gui_scripts": [
+                "demoapp = demoapp.gui.app:main"
+            ]
+        },
+        # ...
+
+
+In this particular case, both, your package and the respective GUI
+entrypoint, *i.e.* the callable from the terminal, are named "demoapp". Of
+course, you will need to change this to some sensible name for your
+package/GUI application.
 
 
 Some notes for developers
@@ -261,11 +334,6 @@ class MainWindow(QtWidgets.QMainWindow):
         Additionally, the minimum size and title of the main GUI window is
         set. The window title is identical to the application name set in
         the :func:`app.main` function in the :mod:`app` module.
-
-        .. note::
-            The non-pythonic name comes from the analogy to windows generated
-            using QtDesigner: the Python files generated using the UIC tool
-            always contain a :meth:`setupUi` method for the same task.
 
         """
         self._create_central_widget()
