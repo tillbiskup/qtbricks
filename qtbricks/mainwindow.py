@@ -49,7 +49,7 @@ reminder that in case of dockable windows, you need a way to restore windows
 closed by the user.
 
 While the :meth:`MainWindow._create_menus` method gets called from the
-:meth:`MainWindow.setupUI` method on startup, for the sake of code
+:meth:`MainWindow._setup_ui` method on startup, for the sake of code
 readability it is best to separate creating each menu into its own (private)
 method that gets called in turn from within the
 :meth:`MainWindow._create_menus` method.
