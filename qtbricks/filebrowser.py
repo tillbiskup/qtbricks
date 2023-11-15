@@ -308,7 +308,7 @@ class FileBrowser(QtWidgets.QWidget):
     def _change_root_path(self, path=""):
         if path == self.root_path:
             return
-        if path.endswith('/'):
+        if path.endswith('/') and path != '/':
             path = path[:-1]
         self._previous_path = self.root_path
         self.root_path = path
@@ -365,9 +365,6 @@ class _FileTree(QtWidgets.QTreeView):
         Properly handle hiding of columns, using :meth:`self.hideColumn(#)`.
 
     .. todo::
-        Tooltips for filenames? Would be very convenient for longer filenames.
-
-    .. todo::
         Context menu, allowing to set the columns to be displayed?
 
     .. todo::
@@ -392,7 +389,7 @@ class _FileTree(QtWidgets.QTreeView):
     def __init__(self, root_path=""):
         super().__init__()
         self._root_path = root_path
-        self._model = QtWidgets.QFileSystemModel()
+        self._model = _FileSystemModel()  # QtWidgets.QFileSystemModel()
         self._setup_ui()
 
     def _setup_ui(self):
@@ -406,6 +403,8 @@ class _FileTree(QtWidgets.QTreeView):
         # noinspection PyUnresolvedReferences
         self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.doubleClicked.connect(self._double_clicked)
+
+        self.setAllColumnsShowFocus(True)
 
     def set_root_path(self, path=""):
         """
@@ -520,6 +519,16 @@ class _FileTree(QtWidgets.QTreeView):
             self._model.setNameFilters(model_settings['filters'])
         if 'filter_disables' in model_settings:
             self._model.setNameFilterDisables(model_settings['filter_disables'])
+
+
+class _FileSystemModel(QtWidgets.QFileSystemModel):
+
+    # noinspection PyUnresolvedReferences
+    def data(self, index, role):
+        if role == QtCore.Qt.ToolTipRole:
+            return super().data(index, QtCore.Qt.DisplayRole)
+        else:
+            return super().data(index, role)
 
 
 class _MainWindow(QtWidgets.QMainWindow):
