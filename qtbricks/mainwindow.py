@@ -382,6 +382,7 @@ class MainWindow(QtWidgets.QMainWindow):
         help_menu = self.menuBar().addMenu("&Help")
         self._add_actions(help_menu, (help_about_action,))
 
+    # pylint: disable=too-many-arguments
     def _create_action(
         self,
         text,
@@ -447,7 +448,7 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         QtWidgets.QMessageBox.about(self, f"About {app_name}", message)
 
-    def closeEvent(self, event):
+    def closeEvent(self, event):  # noqa N802
         """
         Actions performed when attempting to close the window.
 
@@ -476,6 +477,7 @@ class MainWindow(QtWidgets.QMainWindow):
         -------
         status : :class:`bool`
             Whether it is safe to continue
+
         """
         return True
 
@@ -502,6 +504,7 @@ def _main():
 
 if __name__ == "__main__":
     import sys
+
     from PySide6.QtWidgets import QApplication
     from PySide6.QtGui import QIcon
 

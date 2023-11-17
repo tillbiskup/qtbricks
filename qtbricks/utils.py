@@ -48,12 +48,14 @@ def image_path(name="", image_dir="images", base_dir=""):
     -------
     path : :class:`str`
         Full path to the icon
+
     """
     base_dir = base_dir or os.path.dirname(__file__)
     path = os.path.join(base_dir, image_dir, name)
     return path
 
 
+# pylint: disable=too-many-arguments
 def create_button(
     text="", slot=None, shortcut="", icon="", checkable=False, tooltip=""
 ):

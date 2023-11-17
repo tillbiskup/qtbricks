@@ -19,8 +19,9 @@ pep257:
 
 pylint:
   options:
-    max-attributes: 10
+    max-attributes: 12
     max-module-lines: 1500
+    extension-pkg-allow-list: PySide6
 
 pyroma:
   run: true

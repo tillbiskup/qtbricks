@@ -477,7 +477,7 @@ class _FileTree(QtWidgets.QTreeView):
             self._root_path = path
             self.root_path_changed.emit(path)
 
-    def selectionCommand(self, index=QtCore.QModelIndex, event=QtCore.QEvent):
+    def selectionCommand(self, index=QtCore.QModelIndex, event=QtCore.QEvent):  # noqa N802
         """
         Handle selection of the underlying tree view.
 
@@ -504,7 +504,7 @@ class _FileTree(QtWidgets.QTreeView):
             return QtCore.QItemSelectionModel.Deselect
         return super().selectionCommand(index, event)
 
-    def selectionChanged(self, selected, deselected):
+    def selectionChanged(self, selected, deselected):  # noqa N802
         """
         Handle changes of selection of the underlying tree view.
 
@@ -569,9 +569,8 @@ class _FileSystemModel(QtWidgets.QFileSystemModel):
 
         """
         if role == QtCore.Qt.ToolTipRole:
-            return super().data(index, QtCore.Qt.DisplayRole)
-        else:
-            return super().data(index, role)
+            role = QtCore.Qt.DisplayRole
+        return super().data(index, role)
 
 
 class _MainWindow(QtWidgets.QMainWindow):

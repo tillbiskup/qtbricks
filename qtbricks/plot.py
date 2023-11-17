@@ -272,7 +272,6 @@ class _FigureCanvas(backend.FigureCanvasQTAgg):
     """
     Figure canvas containing the Matplotlib figure for use within Qt GUIs.
 
-
     Attributes
     ----------
     figure : :class:`matplotlib.figure.Figure`
@@ -328,15 +327,16 @@ class _MainWindow(QtWidgets.QMainWindow):
         widget = Plot()
         self.setCentralWidget(widget)
 
+        # pylint: disable=import-outside-toplevel
         import numpy as np
 
-        t = np.linspace(0, 4 * np.pi, 501)
-        widget.axes.plot(t, np.sin(t), ".")
+        time = np.linspace(0, 4 * np.pi, 501)
+        widget.axes.plot(time, np.sin(time), ".")
 
         widget.figure.clf()
 
         widget.axes = widget.figure.subplots(2, 1)
-        widget.axes[0].plot(t, np.sin(t), ".")
+        widget.axes[0].plot(time, np.sin(time), ".")
 
         self.show()
 
