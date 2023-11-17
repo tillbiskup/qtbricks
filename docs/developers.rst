@@ -61,12 +61,22 @@ A general overview of the overall package structure:
     tests/
 
 
+Code formatting
+===============
+
+Generally, code formatting follows :pep:`8` guidelines. Given that PySide does *not* follow these guidelines in several aspects, this leads to mixing different conventions. However, whenever own code is concerned, stick to the :pep:`8` guidelines.
+
+A consistent code formatting is enforced using `Black <https://black.readthedocs.io/>`_, with the only change to the default settings being the line width of 78 characters (as compared to the standard of 88 characters). Use ``black -l 78`` on the command line, or, preferably, configure Black in your IDE. For PyCharm, the settings can be found in ``Preferences`` | ``Settings`` > ``Tools`` > ``Black``. Here, set ``-l 78`` as command-line options via the ``Settings`` edit field.
+
+For static code analysis using Prospector, see the respective :ref:`section <sec_prospector>`.
+
+
 Docstring format
 ================
 
 The Docstring format used within the code of the qtbricks package is "NumPy". For convenience, set your IDE accordingly.
 
-For PyCharm, the settings can be found in ``Preferences`` > ``Tools`` > ``Python Integrated Tools``. Here, you find a section "Docstrings" where you can select the Docstring format from a number of different formats.
+For PyCharm, the settings can be found in ``Preferences`` | ``Settings`` > ``Tools`` > ``Python Integrated Tools``. Here, you find a section "Docstrings" where you can select the Docstring format from a number of different formats.
 
 
 Unittests and test driven development
@@ -103,6 +113,8 @@ To build the documentation for all releases and the current master branch:
   * Activate the virtual environment where the necessary dependencies are installed in.
   * ``cd`` to ``docs/``, then run ``make multiversion``. (To clean previously built documentation, run ``make clean`` first).
 
+
+.. _sec_prospector:
 
 Static code analysis with Prospector
 ====================================

@@ -44,8 +44,9 @@ setuptools.setup(
         "matplotlib",
     ],
     extras_require={
-        'dev': ['prospector'],
+        'dev': ['prospector', 'pyroma', 'bandit', 'black'],
         'docs': ['sphinx', 'sphinx-rtd-theme', 'sphinx_multiversion'],
+        'deployment': ['wheel', 'twine'],
     },
     python_requires='>=3.7',
     include_package_data=True,

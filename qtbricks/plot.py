@@ -89,7 +89,7 @@ from PySide6 import QtWidgets
 from matplotlib import figure, widgets
 from matplotlib.backends import backend_qtagg as backend
 
-import qtbricks.utils as utils
+from qtbricks import utils
 
 
 class Plot(QtWidgets.QWidget):
@@ -303,20 +303,25 @@ class _FigureCanvas(backend.FigureCanvasQTAgg):
             self.blit(self.figure.bbox)
         else:
             # noinspection PyUnresolvedReferences
-            self._background = \
-                self.figure.canvas.copy_from_bbox(self.figure.bbox)
+            self._background = self.figure.canvas.copy_from_bbox(
+                self.figure.bbox
+            )
             if isinstance(self.axes, list):
                 axes = self.axes
             else:
                 axes = [self.axes]
             self._cursor = widgets.MultiCursor(
-                None, axes, useblit=False, horizOn=True, vertOn=True,
-                color='red', linewidth=1,
+                None,
+                axes,
+                useblit=False,
+                horizOn=True,
+                vertOn=True,
+                color="red",
+                linewidth=1,
             )
 
 
 class _MainWindow(QtWidgets.QMainWindow):
-
     def __init__(self):
         super().__init__()
 
@@ -325,7 +330,7 @@ class _MainWindow(QtWidgets.QMainWindow):
 
         import numpy as np
 
-        t = np.linspace(0, 4*np.pi, 501)
+        t = np.linspace(0, 4 * np.pi, 501)
         widget.axes.plot(t, np.sin(t), ".")
 
         widget.figure.clf()

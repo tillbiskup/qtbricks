@@ -49,12 +49,12 @@ An example of an :mod:`app` module is shown below:
         app.setOrganizationDomain("example.org")
         app.setApplicationName("Demo application")
         app.setWindowIcon(QIcon(utils.image_path("icon.svg")))
-    
+
         window = mainwindow.MainWindow()
         window.show()
         app.exec()
-    
-    
+
+
     if __name__ == "__main__":
         main()
 
@@ -267,7 +267,7 @@ Module documentation
 from PySide6 import QtGui, QtWidgets
 from PySide6.QtCore import SIGNAL, QSettings, QByteArray, QSize, Qt
 
-import qtbricks.utils as utils
+from qtbricks import utils
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -305,9 +305,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def _restore_settings(self):
         settings = QSettings()
         self.restoreGeometry(
-            settings.value("MainWindow/Geometry", QByteArray()))
-        self.restoreState(
-            settings.value("MainWindow/State", QByteArray()))
+            settings.value("MainWindow/Geometry", QByteArray())
+        )
+        self.restoreState(settings.value("MainWindow/State", QByteArray()))
 
     def _setup_ui(self):
         """
@@ -363,12 +363,14 @@ class MainWindow(QtWidgets.QMainWindow):
     def _create_file_menu(self):
         # noinspection PyUnresolvedReferences
         file_quit_action = self._create_action(
-            "&Quit", self.close, QtGui.QKeySequence.Quit or "Ctrl+Q",
+            "&Quit",
+            self.close,
+            QtGui.QKeySequence.Quit or "Ctrl+Q",
             "file_quit",
-            "Close the application"
+            "Close the application",
         )
         file_menu = self.menuBar().addMenu("&File")
-        self._add_actions(file_menu, (file_quit_action, ))
+        self._add_actions(file_menu, (file_quit_action,))
 
     def _create_view_menu(self):
         self._view_menu = self.menuBar().addMenu("&View")
@@ -380,8 +382,16 @@ class MainWindow(QtWidgets.QMainWindow):
         help_menu = self.menuBar().addMenu("&Help")
         self._add_actions(help_menu, (help_about_action,))
 
-    def _create_action(self, text, slot=None, shortcut=None, icon=None,
-                       tip=None, checkable=False, signal="triggered()"):
+    def _create_action(
+        self,
+        text,
+        slot=None,
+        shortcut=None,
+        icon=None,
+        tip=None,
+        checkable=False,
+        signal="triggered()",
+    ):
         action = QtGui.QAction(text, self)
         if icon:
             action.setIcon(QtGui.QIcon(utils.image_path(f"{icon}.png")))
@@ -405,8 +415,9 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 target.addAction(action)
 
-    def _add_dock_window(self, dock_widget, title="",
-                         area=Qt.RightDockWidgetArea):
+    def _add_dock_window(
+        self, dock_widget, title="", area=Qt.RightDockWidgetArea
+    ):
         dock_window = dock_widget(title)
         self.addDockWidget(area, dock_window)
         self._view_menu.addAction(dock_window.toggleViewAction())
@@ -429,9 +440,11 @@ class MainWindow(QtWidgets.QMainWindow):
         engine.
         """
         app_name = QtWidgets.QApplication.applicationName()
-        message = f"<b>{app_name}</b> " \
-                  f"<p>Copyright &copy; 2023 John Doe.</p>" \
-                  f"<p>This application can be used to perform xxx.</p>"
+        message = (
+            f"<b>{app_name}</b> "
+            f"<p>Copyright &copy; 2023 John Doe.</p>"
+            f"<p>This application can be used to perform xxx.</p>"
+        )
         QtWidgets.QMessageBox.about(self, f"About {app_name}", message)
 
     def closeEvent(self, event):

@@ -107,7 +107,7 @@ import sys
 
 from PySide6 import QtWidgets, QtCore, QtGui
 
-import qtbricks.utils as utils
+from qtbricks import utils
 
 
 class FileBrowser(QtWidgets.QWidget):
@@ -188,8 +188,8 @@ class FileBrowser(QtWidgets.QWidget):
         self.root_path = path or os.path.abspath(os.path.curdir)
         self.selection = []
 
-        self._previous_path = ''
-        self._next_path = ''
+        self._previous_path = ""
+        self._next_path = ""
         self._model_settings = {}
 
         self._home_button = QtWidgets.QPushButton()
@@ -263,27 +263,29 @@ class FileBrowser(QtWidgets.QWidget):
         self._connect_signals()
 
     def _set_widget_properties(self):
-        self._home_button.setIcon(QtGui.QIcon(utils.image_path('house.svg')))
+        self._home_button.setIcon(QtGui.QIcon(utils.image_path("house.svg")))
         self._home_button.setToolTip(
-            'Go to the home directory of the current user'
+            "Go to the home directory of the current user"
         )
         self._up_button.setIcon(
-            QtGui.QIcon(utils.image_path('circle-up.svg'))
+            QtGui.QIcon(utils.image_path("circle-up.svg"))
         )
-        self._up_button.setToolTip('Go one directory up in the hierarchy')
+        self._up_button.setToolTip("Go one directory up in the hierarchy")
         self._back_button.setIcon(
-            QtGui.QIcon(utils.image_path('circle-left.svg')))
-        self._back_button.setToolTip('Go back to the previous directory')
+            QtGui.QIcon(utils.image_path("circle-left.svg"))
+        )
+        self._back_button.setToolTip("Go back to the previous directory")
         self._forward_button.setIcon(
-            QtGui.QIcon(utils.image_path('circle-right.svg')))
+            QtGui.QIcon(utils.image_path("circle-right.svg"))
+        )
         self._forward_button.setToolTip(
-            'Revert going back to the previous directory'
+            "Revert going back to the previous directory"
         )
         self._curdir_edit.setText(self.root_path)
         self._curdir_edit.setCursorPosition(len(self._curdir_edit.text()))
         self._curdir_edit.setToolTip(
-            'Display/edit the current (root) directory.\n'
-            'Only existing directories will be accepted as user input.'
+            "Display/edit the current (root) directory.\n"
+            "Only existing directories will be accepted as user input."
         )
 
     def _set_layout(self):
@@ -321,7 +323,7 @@ class FileBrowser(QtWidgets.QWidget):
     def _change_root_path(self, path=""):
         if path == self.root_path:
             return
-        if path.endswith('/') and path != '/':
+        if path.endswith("/") and path != "/":
             path = path[:-1]
         self._previous_path = self.root_path
         self.root_path = path
@@ -331,7 +333,7 @@ class FileBrowser(QtWidgets.QWidget):
         self._change_root_path(path=os.path.split(self.root_path)[:-1][0])
 
     def _go_home(self):
-        self._change_root_path(path=os.path.expanduser('~'))
+        self._change_root_path(path=os.path.expanduser("~"))
 
     def _go_back(self):
         self._next_path = self.root_path
@@ -339,7 +341,7 @@ class FileBrowser(QtWidgets.QWidget):
 
     def _go_forward(self):
         path = self._next_path
-        self._next_path = ''
+        self._next_path = ""
         self._change_root_path(path=path)
 
     def _update_ui(self):
@@ -531,11 +533,11 @@ class _FileTree(QtWidgets.QTreeView):
         super().selectionChanged(selected, deselected)
 
     def apply_settings(self, model_settings):
-        if 'filters' in model_settings:
-            self._model.setNameFilters(model_settings['filters'])
-        if 'filter_disables' in model_settings:
+        if "filters" in model_settings:
+            self._model.setNameFilters(model_settings["filters"])
+        if "filter_disables" in model_settings:
             self._model.setNameFilterDisables(
-                model_settings['filter_disables']
+                model_settings["filter_disables"]
             )
 
 
@@ -573,7 +575,6 @@ class _FileSystemModel(QtWidgets.QFileSystemModel):
 
 
 class _MainWindow(QtWidgets.QMainWindow):
-
     def __init__(self):
         super().__init__()
 

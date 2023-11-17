@@ -12,7 +12,7 @@ import os
 from PySide6 import QtWidgets, QtGui
 
 
-def image_path(name='', image_dir='images', base_dir=''):
+def image_path(name="", image_dir="images", base_dir=""):
     """
     Return full path to a given image.
 
@@ -54,8 +54,9 @@ def image_path(name='', image_dir='images', base_dir=''):
     return path
 
 
-def create_button(text="", slot=None, shortcut="", icon="", checkable=False,
-                  tooltip=""):
+def create_button(
+    text="", slot=None, shortcut="", icon="", checkable=False, tooltip=""
+):
     """
     Conveniently create a button.
 
@@ -107,7 +108,7 @@ def create_button(text="", slot=None, shortcut="", icon="", checkable=False,
         button.setShortcut(shortcut)
     if tooltip:
         if shortcut:
-            tooltip = '\n'.join([tooltip, f'Keyboard shortcut: {shortcut}'])
+            tooltip = "\n".join([tooltip, f"Keyboard shortcut: {shortcut}"])
         button.setToolTip(tooltip)
     if slot:
         if checkable:
