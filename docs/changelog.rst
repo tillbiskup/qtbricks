@@ -14,3 +14,17 @@ Not yet released
 
 * ...
 
+
+Version 0.1.0-rc1
+=================
+
+Not yet released
+
+* First public pre-release
+
+* Basic versions of the following widgets:
+
+  * File browser
+  * Plot
+
+* Main window with basic functionality

@@ -35,9 +35,7 @@ And to make it even more convenient for users and future-proof:
 Installation
 ============
 
-To install the qtbricks package on your computer (sensibly within a Python virtual environment), open a terminal (activate your virtual environment), and type in the following:
-
-.. code-block:: bash
+To install the qtbricks package on your computer (sensibly within a Python virtual environment), open a terminal (activate your virtual environment), and type in the following::
 
     pip install qtbricks
 
@@ -48,8 +46,7 @@ License
 This program is free software: you can redistribute it and/or modify it under the terms of the **BSD License**.
 
 
-A note on the logo and name
-===========================
+A note on the name
+==================
 
-Why "qtbricks"? What is in a name? A name should answer the important questions (What is it? What does it?), should be easy to remember and reasonably unique to be searchable (findable!) on the web. Bricks are basic building blocks, more generic than the term "widget" in a GUI context, and after all, bricks seem to have a natural connection to windows, haven't they? Hence the logo...
-
+Why "qtbricks"? What is in a name? A name should answer the important questions (What is it? What does it?), should be easy to remember and reasonably unique to be searchable (findable!) on the web. Bricks are basic building blocks, more generic than the term "widget" in a GUI context, and after all, bricks seem to have a natural connection to windows, haven't they?
