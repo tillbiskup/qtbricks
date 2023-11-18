@@ -18,7 +18,7 @@ Not yet released
 Version 0.1.0-rc1
 =================
 
-Not yet released
+Released 2023-11-18
 
 * First public pre-release
 
