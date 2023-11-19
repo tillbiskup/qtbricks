@@ -31,7 +31,18 @@ usually call the :func:`app.main` function of the :mod:`app` module,
 or simply call the GUI by means of the respective gui_scripts entry point
 defined in ``setup.py``.
 
-An example of an :mod:`app` module is shown below:
+
+.. note::
+
+    Of course, you will usually not use the :class:`MainWindow` as
+    implemented here, as it lacks all contents, but rather create your own
+    ``MainWindow`` class inheriting from :class:`MainWindow` and setting
+    the central widgets and everything else as appropriate.
+
+
+An example of an :mod:`app` module is shown below. Note the fictitious
+name ``mypackage`` that you would need to replace with the actual name of
+your package:
 
 .. code-block::
 
@@ -40,8 +51,9 @@ An example of an :mod:`app` module is shown below:
     from PySide6.QtWidgets import QApplication
     from PySide6.QtGui import QIcon
 
-    from qtbricks import mainwindow, utils
+    from qtbricks import utils
 
+    from mypackage import mainwindow
 
     def main():
         app = QApplication(sys.argv)
@@ -63,6 +75,11 @@ Note that the setting of the organisation name
 (``app.setOrganizationName()``) is crucial for storing settings, as this
 determines the name of the directory the settings are stored under. The
 exact location of the configuration depends on your operating system.
+Furthermore, setting the application name (``app.setApplicationName()``)
+is relevant for programmatically obtaining the application name, *e.g.*,
+for window titles and alike. As you can see from the above code,
+Qt is capable of handling SVG files directly, very convenient for icons
+and logos of your application.
 
 The corresponding section in the ``setup.py`` file with the gui entrypoint
 may look similar to the following:
@@ -93,6 +110,41 @@ provides only a small set of (sensible) defaults for the most common tasks.
 However, to help with creating GUIs and to keep the code as readable as
 possible, some general advice and an overview of the functionality
 implemented are given below.
+
+
+First step: creating your own mainwindow module
+-----------------------------------------------
+
+The first step is always to create your own ``mainwindow`` module,
+presumably in the ``gui`` subpackage of your package. A rather minimal
+structure of this module is shown below:
+
+
+.. code-block::
+
+    from PySide6 import QtWidgets
+
+    import qtbricks.mainwindow
+
+    import mypackage.gui.model as model
+
+
+    class MainWindow(qtbricks.mainwindow.MainWindow):
+
+        def __init__(self):
+            # Customise your main window, setting at least a central widget.
+            # Try to keep methods as short and concise as possible.
+
+
+A few comments, beyond the obvious:
+
+* You will want/need to import further modules containing the definition
+  of the widget(s) used as central widget and possibly in dockable areas.
+
+* You should always follow the model-view paradigm for larger
+  applications, and come up with a model of your application containing
+  the business logic. This is reflected in the import of a model module of
+  your fictitious ``mypackage`` package.
 
 
 Saving and restoring GUI settings
