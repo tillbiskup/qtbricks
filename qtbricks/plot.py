@@ -331,10 +331,12 @@ class _FigureCanvas(backend.FigureCanvasQTAgg):
             )
 
     def toggle_grid(self):
-        # noinspection PyTypeChecker
-        for axes in self.axes:
-            axes.grid(visible=self._grid)
-            self.draw()
+        if isinstance(self.axes, collections.abc.Iterable):
+            for axes in self.axes:
+                axes.grid(visible=self._grid)
+        else:
+            self.axes.grid(visible=self._grid)
+        self.draw_idle()
 
 
 class _MainWindow(QtWidgets.QMainWindow):
