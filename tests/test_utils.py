@@ -1,7 +1,7 @@
 import os
 import unittest
 
-import PySide6
+import PySide6.QtWidgets
 
 from qtbricks import utils
 
@@ -34,7 +34,9 @@ class TestImagePath(unittest.TestCase):
 
 
 class TestCreateButton(unittest.TestCase):
-    @unittest.skip
+    def setUp(self):
+        app = PySide6.QtWidgets.QApplication([])
+
     def test_create_button_returns_button(self):
         button = utils.create_button()
         self.assertIsInstance(button, PySide6.QtWidgets.QPushButton)
