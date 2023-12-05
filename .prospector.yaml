@@ -20,6 +20,7 @@ pep257:
 pylint:
   options:
     max-attributes: 12
+    max-locals: 20
     max-module-lines: 1500
     extension-pkg-allow-list: PySide6
 

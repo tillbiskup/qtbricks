@@ -350,6 +350,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self._view_menu = None
 
         self._setup_ui()
         self._restore_settings()
@@ -543,11 +544,11 @@ def _main():
     aspects of the (Qt) application are set that are relevant for saving and
     restoring settings, as well as the window icon.
     """
-    app = QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     app.setOrganizationName("qtbricks")
     app.setOrganizationDomain("example.org")
     app.setApplicationName("Demo application")
-    app.setWindowIcon(QIcon(utils.image_path("icon.svg")))
+    app.setWindowIcon(QtGui.QIcon(utils.image_path("icon.svg")))
 
     window = MainWindow()
     window.show()
@@ -556,8 +557,5 @@ def _main():
 
 if __name__ == "__main__":
     import sys
-
-    from PySide6.QtWidgets import QApplication
-    from PySide6.QtGui import QIcon
 
     _main()

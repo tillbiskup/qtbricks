@@ -477,7 +477,9 @@ class _FileTree(QtWidgets.QTreeView):
             self._root_path = path
             self.root_path_changed.emit(path)
 
-    def selectionCommand(self, index=QtCore.QModelIndex, event=QtCore.QEvent):  # noqa N802
+    def selectionCommand(  # noqa N802
+        self, index=QtCore.QModelIndex, event=QtCore.QEvent
+    ):
         """
         Handle selection of the underlying tree view.
 
