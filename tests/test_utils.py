@@ -1,7 +1,7 @@
 import os
 import unittest
 
-import PySide6.QtWidgets
+from PySide6 import QtCore, QtWidgets
 
 from qtbricks import utils
 
@@ -35,8 +35,15 @@ class TestImagePath(unittest.TestCase):
 
 class TestCreateButton(unittest.TestCase):
     def setUp(self):
-        app = PySide6.QtWidgets.QApplication([])
+        self.app = (
+            QtWidgets.QApplication.instance() or QtWidgets.QApplication()
+        )
+        self.addCleanup(self.release_qt_resources)
+
+    def release_qt_resources(self):
+        self.app.sendPostedEvents(event_type=QtCore.QEvent.DeferredDelete)
+        self.app.processEvents()
 
     def test_create_button_returns_button(self):
         button = utils.create_button()
-        self.assertIsInstance(button, PySide6.QtWidgets.QPushButton)
+        self.assertIsInstance(button, QtWidgets.QPushButton)
