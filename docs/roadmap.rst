@@ -21,6 +21,11 @@ For version 0.1
 For later versions
 ==================
 
+* Status window
+
+  * dockable
+  * multiline (read-only) text area
+
 * Property editor widget
 
 * Help window with help texts generated via Sphinx and displayed as HTML with links
