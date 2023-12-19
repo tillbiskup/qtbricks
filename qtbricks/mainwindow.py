@@ -235,6 +235,9 @@ can (and usually will) contain arbitrarily complex widgets.
             self.setWidget(self.list_widget)
 
 
+Note that a very similar implementation is provided in the
+:class:`GeneralDockWindow` class. See its documentation for further details.
+
 The possible docking areas the window can be attached to can be restricted
 as well:
 
@@ -264,8 +267,9 @@ achieved using the convenience function :meth:`MainWindow._add_dock_window`:
 
 .. code-block::
 
+    dock_window = GeneralDockWindow()
     self._add_dock_window(
-        GeneralDockWindow,
+        dock_window,
         "general 1",
         Qt.LeftDockWidgetArea
     )
@@ -470,9 +474,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 target.addAction(action)
 
     def _add_dock_window(
-        self, dock_widget, title="", area=Qt.RightDockWidgetArea
+        self, dock_window=None, title="", area=Qt.RightDockWidgetArea
     ):
-        dock_window = dock_widget(title)
+        if title:
+            dock_window.setTitle(title)
         self.addDockWidget(area, dock_window)
         self._view_menu.addAction(dock_window.toggleViewAction())
         return dock_window
@@ -533,6 +538,76 @@ class MainWindow(QtWidgets.QMainWindow):
 
         """
         return True
+
+
+class GeneralDockWindow(QtWidgets.QDockWidget):
+    """
+    Convenience class for dockable windows.
+
+    This is a thin wrapper for widgets that should appear as dockable
+    windows in a main application window. Note that this dock window is not
+    restricted with respect to the dockable areas it can be positioned in.
+    You may, however, restrict this afterwards. See the examples section for
+    details.
+
+    Parameters
+    ----------
+    title : :class:`str`
+        Window title
+
+        The window title should be comprehensive, as it is used both,
+        as window title in the dock and in the view menu of the main window.
+
+    widget : :class:`PySide6.QtWidgets.QWidget`
+        Widget to be set as (central) widget of the dockable window
+
+
+    Examples
+    --------
+    To add a dockable window to your main application window, you first need
+    to create a dockable window containing the (complex) widget of your
+    choosing, and afterwards add it to your main application window.
+
+    If you subclass :class:`MainWindow` for your main application window,
+    you can make use of a series of convenience methods provided. Dockable
+    windows should be defined within the method
+    :meth:`MainWindow._create_dock_windows`. You can add the dockable window
+    using the method :meth:`MainWindow._add_dock_window`.
+
+    .. code-block::
+
+        def _create_dock_windows(self):
+            dock_window = qtbricks.mainwindow.GeneralDockWindow(
+                title="My fancy dockable window",
+                widget=QtWidgets.QListWidget(),
+            )
+            self._add_dock_window(dock_window=dock_window)
+
+    This will add a dock window to the main application window.
+
+    If you would like to restrict the possible docking areas the dock window
+    can be added to, you may set the respective property after initialising
+    the object:
+
+    .. code-block::
+
+        dock_window = qtbricks.mainwindow.GeneralDockWindow(
+            title="My fancy dockable window",
+            widget=QtWidgets.QListWidget(),
+        )
+        dock_window.setAllowedAreas(
+            Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea
+        )
+
+    Note that you need to import ``PySide6.QtCore.Qt`` for this to work.
+
+    """
+
+    def __init__(self, title="General dock window", widget=None):
+        super().__init__()
+        self.setWindowTitle(title)
+        # noinspection PyTypeChecker
+        self.setWidget(widget)
 
 
 def _main():
