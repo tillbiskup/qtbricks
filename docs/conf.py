@@ -242,4 +242,4 @@ intersphinx_mapping = {
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
-# todo_link_only = True
+todo_link_only = True
