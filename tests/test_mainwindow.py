@@ -47,3 +47,8 @@ class TestGeneralDockWindow(unittest.TestCase):
         widget = QtWidgets.QListWidget()
         window = mainwindow.GeneralDockWindow(widget=widget)
         self.assertEqual(window.widget(), widget)
+
+    def test_initialisation_sets_object_name(self):
+        object_name = "Foo"
+        window = mainwindow.GeneralDockWindow(object_name=object_name)
+        self.assertEqual(window.objectName(), object_name)

@@ -580,10 +580,13 @@ class GeneralDockWindow(QtWidgets.QDockWidget):
             dock_window = qtbricks.mainwindow.GeneralDockWindow(
                 title="My fancy dockable window",
                 widget=QtWidgets.QListWidget(),
+                object_name="MyDockWindow"
             )
             self._add_dock_window(dock_window=dock_window)
 
-    This will add a dock window to the main application window.
+    This will add a dock window to the main application window. Make sure to
+    set the object name, as otherwise, Qt will produce warnings if you try
+    to save the application state.
 
     If you would like to restrict the possible docking areas the dock window
     can be added to, you may set the respective property after initialising
@@ -594,6 +597,7 @@ class GeneralDockWindow(QtWidgets.QDockWidget):
         dock_window = qtbricks.mainwindow.GeneralDockWindow(
             title="My fancy dockable window",
             widget=QtWidgets.QListWidget(),
+            object_name="MyDockWindow"
         )
         dock_window.setAllowedAreas(
             Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea
@@ -603,9 +607,12 @@ class GeneralDockWindow(QtWidgets.QDockWidget):
 
     """
 
-    def __init__(self, title="General dock window", widget=None):
+    def __init__(
+        self, title="General dock window", object_name="", widget=None
+    ):
         super().__init__()
         self.setWindowTitle(title)
+        self.setObjectName(object_name)
         # noinspection PyTypeChecker
         self.setWidget(widget)
 
