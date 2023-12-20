@@ -47,3 +47,25 @@ class TestCreateButton(unittest.TestCase):
     def test_create_button_returns_button(self):
         button = utils.create_button()
         self.assertIsInstance(button, QtWidgets.QPushButton)
+
+
+class TestIntValidator(unittest.TestCase):
+    def setUp(self):
+        self.validator = utils.IntValidator()
+
+    def test_instantiate_class(self):
+        pass
+
+    def test_fixup_with_value_exceeding_top_returns_top(self):
+        self.validator.setTop(42)
+        self.assertEqual(
+            self.validator.fixup(str(42 + 5)),
+            str(self.validator.top()),
+        )
+
+    def test_fixup_with_value_exceeding_bottom_returns_bottom(self):
+        self.validator.setBottom(42)
+        self.assertEqual(
+            self.validator.fixup(str(42 - 5)),
+            str(self.validator.bottom()),
+        )
