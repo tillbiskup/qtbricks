@@ -12,10 +12,12 @@ An alphabetic list of the modules available within the qtbricks package. The act
 .. toctree::
     :maxdepth: 1
 
+    qtbricks.aboutdialog
     qtbricks.filebrowser
     qtbricks.mainwindow
     qtbricks.plot
     qtbricks.testing
     qtbricks.utils
+
 
 
