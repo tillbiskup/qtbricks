@@ -48,7 +48,7 @@ import string
 import subprocess  # noqa
 import sys
 
-from PySide6 import QtWidgets, QtGui, QtCore
+from PySide6 import QtWidgets, QtGui
 
 import qtbricks.utils
 
@@ -127,6 +127,18 @@ class AboutDialog(QtWidgets.QDialog):
     information regarding the application, such as its name and version
     number, website, license, authors, and debug information.
 
+    Attributes
+    ----------
+    package_name : :class:`str`
+        Name of the package
+
+        This information is crucial for displaying the relevant
+        package metadata, such as version, short description, authors,
+        and licence.
+
+    logo : :class:`str`
+        Path to logo image file
+
 
     Parameters
     ----------
@@ -135,12 +147,26 @@ class AboutDialog(QtWidgets.QDialog):
 
         The dialog will usually be centered upon the parent.
 
+    package_name : :class:`str`
+        Name of the package
+
+        This information is crucial for displaying the relevant
+        package metadata, such as version, short description, authors,
+        and licence.
+
+    logo : :class:`str`
+        Path to logo image file
+
     """
 
-    def __init__(self, parent=None, package_name=""):
+    def __init__(self, parent=None, package_name="", logo=""):
         super().__init__(parent)
 
         self.package_name = package_name
+        if logo:
+            self.logo = QtGui.QPixmap(logo)
+        else:
+            self.logo = QtGui.QPixmap(qtbricks.utils.image_path("icon.svg"))
 
         self._application_name = QtWidgets.QApplication.applicationName()
         self._dialog_buttons = QtWidgets.QDialogButtonBox.Close
@@ -179,9 +205,8 @@ class AboutDialog(QtWidgets.QDialog):
     def _create_top_layout(self):
         package_metadata = metadata.metadata(self.package_name)
         version = package_metadata["Version"]
-        logo = QtGui.QPixmap(qtbricks.utils.image_path("icon.svg"))
         icon = QtWidgets.QLabel()
-        icon.setPixmap(logo.scaledToHeight(60))
+        icon.setPixmap(self.logo.scaledToHeight(60))
         text = QtWidgets.QLabel(
             f"<h1>{self.package_name}</h1>Version {version}"
         )

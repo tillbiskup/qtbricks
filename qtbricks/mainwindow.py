@@ -358,12 +358,18 @@ class MainWindow(QtWidgets.QMainWindow):
 
         This information is required, *i.a.*, for the "Help About" window.
 
+    logo : :class:`str`
+        Path to logo image file
+
+        The logo is used, *i.a.*, for the Help About window.
+
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
 
         self.package_name = "qtbricks"
+        self.logo = utils.image_path("icon.svg")
 
         self._view_menu = None
 
@@ -504,7 +510,7 @@ class MainWindow(QtWidgets.QMainWindow):
         -> About" menu.
         """
         dialog = aboutdialog.AboutDialog(
-            parent=self, package_name=self.package_name
+            parent=self, package_name=self.package_name, logo=self.logo
         )
         dialog.exec()
 
