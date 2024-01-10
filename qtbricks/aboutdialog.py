@@ -17,10 +17,25 @@ read by the ``importlib.metadata`` module.
 Some notes for developers
 =========================
 
-Things do describe here:
+If you base the main window of your GUI application on the
+:class:`qtbricks.mainwindow.MainWindow` class and set the
+:attr:`qtbricks.mainwindow.MainWindow.package_name` attribute accordingly,
+you are basically set up.
 
-* How to include the dialog in own GUI main windows
-* How to customise the displayed information
+If, however, you want to change or extend the texts displayed in the three
+tabs, the easiest way is to change each of the respective methods returning
+the text to be displayed, namely:
+
+* :meth:`AboutDialog._create_about_text`
+* :meth:`AboutDialog._create_authors_text`
+* :meth:`AboutDialog._create_debug_info_text`
+
+Each of these non-public methods returns a text that is set as text of the
+underlying display widget. Hence, you can use a reduced set of HTML tags to
+properly format the text.
+
+Furthermore, if you need more control, you may think of using `Jinja
+<https://jinja.palletsprojects.com/>`_ as template engine.
 
 
 Module documentation
@@ -33,7 +48,7 @@ import string
 import subprocess  # noqa
 import sys
 
-from PySide6 import QtWidgets, QtGui
+from PySide6 import QtWidgets, QtGui, QtCore
 
 import qtbricks.utils
 

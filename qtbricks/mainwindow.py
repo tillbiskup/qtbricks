@@ -323,7 +323,7 @@ Module documentation
 from PySide6 import QtGui, QtWidgets
 from PySide6.QtCore import SIGNAL, QSettings, QByteArray, QSize, Qt
 
-from qtbricks import utils
+from qtbricks import utils, aboutdialog
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -350,10 +350,21 @@ class MainWindow(QtWidgets.QMainWindow):
     name depend on the settings of organisation and application name on the
     application level. For details, see the :func:`app.main` function in the
     :mod:`app` module.
+
+    Attributes
+    ----------
+    package_name : :class:`str`
+        Name of the package the mainwindow belongs to.
+
+        This information is required, *i.a.*, for the "Help About" window.
+
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
+
+        self.package_name = "qtbricks"
+
         self._view_menu = None
 
         self._setup_ui()
@@ -491,20 +502,11 @@ class MainWindow(QtWidgets.QMainWindow):
         a license information, and some very basic system settings,
         is a sensible thing to do. Typically, this can be found in the "Help
         -> About" menu.
-
-        In a real application, you may think of extending the message,
-        perhaps storing either the entire dialog in a separate module or the
-        message text in a separate file. Furthermore, if you have the need
-        of replacing values in the text, consider using Jinja as template
-        engine.
         """
-        app_name = QtWidgets.QApplication.applicationName()
-        message = (
-            f"<b>{app_name}</b> "
-            f"<p>Copyright &copy; 2023 John Doe.</p>"
-            f"<p>This application can be used to perform xxx.</p>"
+        dialog = aboutdialog.AboutDialog(
+            parent=self, package_name=self.package_name
         )
-        QtWidgets.QMessageBox.about(self, f"About {app_name}", message)
+        dialog.exec()
 
     def closeEvent(self, event):  # noqa N802
         """
