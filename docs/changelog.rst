@@ -15,6 +15,40 @@ Not yet released
 * ...
 
 
+Version 0.1.0-rc2
+=================
+
+Not yet released
+
+* Second public pre-release
+
+
+New features
+------------
+
+* New widget: Help-About window
+
+  * Modular general information about a given package
+  * Reads most metadata from the package ``setup.py``
+
+* Plot widget
+
+  * Display grid
+
+* New module: :mod:`qtbricks.testing`
+
+  * Testing-related helper functionality
+
+* Utils
+
+  * :class:`qtbricks.utils.IntValidator`: Integer validator actually fixing input that is beyond the boundaries.
+
+* Implementation
+
+  * Start with proper unit tests
+  * Code formatting using Black
+
+
 Version 0.1.0-rc1
 =================
 
