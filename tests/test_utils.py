@@ -1,7 +1,7 @@
 import os
 import unittest
 
-import PySide6
+from PySide6 import QtCore, QtWidgets
 
 from qtbricks import utils
 
@@ -34,7 +34,38 @@ class TestImagePath(unittest.TestCase):
 
 
 class TestCreateButton(unittest.TestCase):
-    @unittest.skip
+    def setUp(self):
+        self.app = (
+            QtWidgets.QApplication.instance() or QtWidgets.QApplication()
+        )
+        self.addCleanup(self.release_qt_resources)
+
+    def release_qt_resources(self):
+        self.app.sendPostedEvents(event_type=QtCore.QEvent.DeferredDelete)
+        self.app.processEvents()
+
     def test_create_button_returns_button(self):
         button = utils.create_button()
-        self.assertIsInstance(button, PySide6.QtWidgets.QPushButton)
+        self.assertIsInstance(button, QtWidgets.QPushButton)
+
+
+class TestIntValidator(unittest.TestCase):
+    def setUp(self):
+        self.validator = utils.IntValidator()
+
+    def test_instantiate_class(self):
+        pass
+
+    def test_fixup_with_value_exceeding_top_returns_top(self):
+        self.validator.setTop(42)
+        self.assertEqual(
+            self.validator.fixup(str(42 + 5)),
+            str(self.validator.top()),
+        )
+
+    def test_fixup_with_value_exceeding_bottom_returns_bottom(self):
+        self.validator.setBottom(42)
+        self.assertEqual(
+            self.validator.fixup(str(42 - 5)),
+            str(self.validator.bottom()),
+        )

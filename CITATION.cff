@@ -20,3 +20,7 @@ keywords:
   - "Qt"
   - "PySide6"
   - "Widgets"
+identifiers:
+  - description: "The concept DOI of the work."
+    type: doi
+    value: 10.5281/zenodo.10154865

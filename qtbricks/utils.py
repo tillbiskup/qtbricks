@@ -142,3 +142,52 @@ def make_buttons_in_group_uncheckable(buttongroup):
     buttongroup.buttonClicked.connect(
         lambda button: button.group().setExclusive(True)
     )
+
+
+class IntValidator(QtGui.QIntValidator):
+    """
+    Integer validator actually fixing input that is beyond the boundaries.
+
+    The standard Qt integer validator (actually the base class of this class)
+    has an empty `fixup` method. Here, the fixup sets text exceeding the set
+    boundaries to the respective boundary.
+
+    Examples
+    --------
+    A typical use case of the :class:`IntValidator` class are
+    :class:`PySide6.QtWidgets.QLineEdit` widgets:
+
+    .. code-block::
+
+        line_edit = QtWidgets.QLineEdit()
+        validator = IntValidator(0, 42)
+        line_edit.setValidator(validator)
+
+    In this case, if the user enters values smaller than 0 or larger than 42,
+    the actual value of the line edit will be set to the respective boundary.
+
+    """
+
+    def fixup(self, value):
+        """
+        Attempt to change input to be valid according to the validator rules.
+
+        In case the value exceeds the lower or upper boundary defined by
+        :attr:`bottom` or :attr:`top`, the respective boundary is returned.
+
+        Parameters
+        ----------
+        value : :class:`str`
+            Value to be fixed.
+
+        Returns
+        -------
+        value : :class:`str`
+            Value that has been fixed.
+
+        """
+        if int(value) > self.top():
+            value = str(self.top())
+        if int(value) < self.bottom():
+            value = str(self.bottom())
+        return value

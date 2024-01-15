@@ -31,7 +31,18 @@ usually call the :func:`app.main` function of the :mod:`app` module,
 or simply call the GUI by means of the respective gui_scripts entry point
 defined in ``setup.py``.
 
-An example of an :mod:`app` module is shown below:
+
+.. note::
+
+    Of course, you will usually not use the :class:`MainWindow` as
+    implemented here, as it lacks all contents, but rather create your own
+    ``MainWindow`` class inheriting from :class:`MainWindow` and setting
+    the central widgets and everything else as appropriate.
+
+
+An example of an :mod:`app` module is shown below. Note the fictitious
+name ``mypackage`` that you would need to replace with the actual name of
+your package:
 
 .. code-block::
 
@@ -40,8 +51,9 @@ An example of an :mod:`app` module is shown below:
     from PySide6.QtWidgets import QApplication
     from PySide6.QtGui import QIcon
 
-    from qtbricks import mainwindow, utils
+    from qtbricks import utils
 
+    from mypackage import mainwindow
 
     def main():
         app = QApplication(sys.argv)
@@ -63,6 +75,11 @@ Note that the setting of the organisation name
 (``app.setOrganizationName()``) is crucial for storing settings, as this
 determines the name of the directory the settings are stored under. The
 exact location of the configuration depends on your operating system.
+Furthermore, setting the application name (``app.setApplicationName()``)
+is relevant for programmatically obtaining the application name, *e.g.*,
+for window titles and alike. As you can see from the above code,
+Qt is capable of handling SVG files directly, very convenient for icons
+and logos of your application.
 
 The corresponding section in the ``setup.py`` file with the gui entrypoint
 may look similar to the following:
@@ -93,6 +110,41 @@ provides only a small set of (sensible) defaults for the most common tasks.
 However, to help with creating GUIs and to keep the code as readable as
 possible, some general advice and an overview of the functionality
 implemented are given below.
+
+
+First step: creating your own mainwindow module
+-----------------------------------------------
+
+The first step is always to create your own ``mainwindow`` module,
+presumably in the ``gui`` subpackage of your package. A rather minimal
+structure of this module is shown below:
+
+
+.. code-block::
+
+    from PySide6 import QtWidgets
+
+    import qtbricks.mainwindow
+
+    import mypackage.gui.model as model
+
+
+    class MainWindow(qtbricks.mainwindow.MainWindow):
+
+        def __init__(self):
+            # Customise your main window, setting at least a central widget.
+            # Try to keep methods as short and concise as possible.
+
+
+A few comments, beyond the obvious:
+
+* You will want/need to import further modules containing the definition
+  of the widget(s) used as central widget and possibly in dockable areas.
+
+* You should always follow the model-view paradigm for larger
+  applications, and come up with a model of your application containing
+  the business logic. This is reflected in the import of a model module of
+  your fictitious ``mypackage`` package.
 
 
 Saving and restoring GUI settings
@@ -183,6 +235,9 @@ can (and usually will) contain arbitrarily complex widgets.
             self.setWidget(self.list_widget)
 
 
+Note that a very similar implementation is provided in the
+:class:`GeneralDockWindow` class. See its documentation for further details.
+
 The possible docking areas the window can be attached to can be restricted
 as well:
 
@@ -212,8 +267,9 @@ achieved using the convenience function :meth:`MainWindow._add_dock_window`:
 
 .. code-block::
 
+    dock_window = GeneralDockWindow()
     self._add_dock_window(
-        GeneralDockWindow,
+        dock_window,
         "general 1",
         Qt.LeftDockWidgetArea
     )
@@ -267,7 +323,7 @@ Module documentation
 from PySide6 import QtGui, QtWidgets
 from PySide6.QtCore import SIGNAL, QSettings, QByteArray, QSize, Qt
 
-from qtbricks import utils
+from qtbricks import utils, aboutdialog
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -294,10 +350,28 @@ class MainWindow(QtWidgets.QMainWindow):
     name depend on the settings of organisation and application name on the
     application level. For details, see the :func:`app.main` function in the
     :mod:`app` module.
+
+    Attributes
+    ----------
+    package_name : :class:`str`
+        Name of the package the mainwindow belongs to.
+
+        This information is required, *i.a.*, for the "Help About" window.
+
+    logo : :class:`str`
+        Path to logo image file
+
+        The logo is used, *i.a.*, for the Help About window.
+
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
+
+        self.package_name = "qtbricks"
+        self.logo = utils.image_path("icon.svg")
+
+        self._view_menu = None
 
         self._setup_ui()
         self._restore_settings()
@@ -417,9 +491,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 target.addAction(action)
 
     def _add_dock_window(
-        self, dock_widget, title="", area=Qt.RightDockWidgetArea
+        self, dock_window=None, title="", area=Qt.RightDockWidgetArea
     ):
-        dock_window = dock_widget(title)
+        if title:
+            dock_window.setTitle(title)
         self.addDockWidget(area, dock_window)
         self._view_menu.addAction(dock_window.toggleViewAction())
         return dock_window
@@ -433,20 +508,11 @@ class MainWindow(QtWidgets.QMainWindow):
         a license information, and some very basic system settings,
         is a sensible thing to do. Typically, this can be found in the "Help
         -> About" menu.
-
-        In a real application, you may think of extending the message,
-        perhaps storing either the entire dialog in a separate module or the
-        message text in a separate file. Furthermore, if you have the need
-        of replacing values in the text, consider using Jinja as template
-        engine.
         """
-        app_name = QtWidgets.QApplication.applicationName()
-        message = (
-            f"<b>{app_name}</b> "
-            f"<p>Copyright &copy; 2023 John Doe.</p>"
-            f"<p>This application can be used to perform xxx.</p>"
+        dialog = aboutdialog.AboutDialog(
+            parent=self, package_name=self.package_name, logo=self.logo
         )
-        QtWidgets.QMessageBox.about(self, f"About {app_name}", message)
+        dialog.exec()
 
     def closeEvent(self, event):  # noqa N802
         """
@@ -482,6 +548,83 @@ class MainWindow(QtWidgets.QMainWindow):
         return True
 
 
+class GeneralDockWindow(QtWidgets.QDockWidget):
+    """
+    Convenience class for dockable windows.
+
+    This is a thin wrapper for widgets that should appear as dockable
+    windows in a main application window. Note that this dock window is not
+    restricted with respect to the dockable areas it can be positioned in.
+    You may, however, restrict this afterwards. See the examples section for
+    details.
+
+    Parameters
+    ----------
+    title : :class:`str`
+        Window title
+
+        The window title should be comprehensive, as it is used both,
+        as window title in the dock and in the view menu of the main window.
+
+    widget : :class:`PySide6.QtWidgets.QWidget`
+        Widget to be set as (central) widget of the dockable window
+
+
+    Examples
+    --------
+    To add a dockable window to your main application window, you first need
+    to create a dockable window containing the (complex) widget of your
+    choosing, and afterwards add it to your main application window.
+
+    If you subclass :class:`MainWindow` for your main application window,
+    you can make use of a series of convenience methods provided. Dockable
+    windows should be defined within the method
+    :meth:`MainWindow._create_dock_windows`. You can add the dockable window
+    using the method :meth:`MainWindow._add_dock_window`.
+
+    .. code-block::
+
+        def _create_dock_windows(self):
+            dock_window = qtbricks.mainwindow.GeneralDockWindow(
+                title="My fancy dockable window",
+                widget=QtWidgets.QListWidget(),
+                object_name="MyDockWindow"
+            )
+            self._add_dock_window(dock_window=dock_window)
+
+    This will add a dock window to the main application window. Make sure to
+    set the object name, as otherwise, Qt will produce warnings if you try
+    to save the application state.
+
+    If you would like to restrict the possible docking areas the dock window
+    can be added to, you may set the respective property after initialising
+    the object:
+
+    .. code-block::
+
+        dock_window = qtbricks.mainwindow.GeneralDockWindow(
+            title="My fancy dockable window",
+            widget=QtWidgets.QListWidget(),
+            object_name="MyDockWindow"
+        )
+        dock_window.setAllowedAreas(
+            Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea
+        )
+
+    Note that you need to import ``PySide6.QtCore.Qt`` for this to work.
+
+    """
+
+    def __init__(
+        self, title="General dock window", object_name="", widget=None
+    ):
+        super().__init__()
+        self.setWindowTitle(title)
+        self.setObjectName(object_name)
+        # noinspection PyTypeChecker
+        self.setWidget(widget)
+
+
 def _main():
     """
     Entry point for the GUI application.
@@ -491,11 +634,11 @@ def _main():
     aspects of the (Qt) application are set that are relevant for saving and
     restoring settings, as well as the window icon.
     """
-    app = QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     app.setOrganizationName("qtbricks")
     app.setOrganizationDomain("example.org")
     app.setApplicationName("Demo application")
-    app.setWindowIcon(QIcon(utils.image_path("icon.svg")))
+    app.setWindowIcon(QtGui.QIcon(utils.image_path("icon.svg")))
 
     window = MainWindow()
     window.show()
@@ -504,8 +647,5 @@ def _main():
 
 if __name__ == "__main__":
     import sys
-
-    from PySide6.QtWidgets import QApplication
-    from PySide6.QtGui import QIcon
 
     _main()

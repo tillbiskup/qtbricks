@@ -3,6 +3,7 @@
 
 ignore-paths:
   - templates
+  - build
 
 inherits:
   - strictness_high
@@ -20,8 +21,16 @@ pep257:
 pylint:
   options:
     max-attributes: 12
+    max-locals: 20
     max-module-lines: 1500
     extension-pkg-allow-list: PySide6
+
+pycodestyle:
+  disable:
+    - E203
+    - W503
+  enable:
+    - W504
 
 pyroma:
   run: true

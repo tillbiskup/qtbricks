@@ -80,8 +80,10 @@ Module documentation
 ====================
 
 """
-
+import collections.abc
 import sys
+
+import numpy as np
 
 # Import PySide6 before matplotlib
 from PySide6 import QtWidgets
@@ -235,6 +237,13 @@ class Plot(QtWidgets.QWidget):
         toggle_group.addButton(crosshair_button)
         utils.make_buttons_in_group_uncheckable(toggle_group)
         # /Button group
+        grid_button = utils.create_button(
+            icon="hashtag.svg",
+            shortcut="#",
+            tooltip="Show grid",
+            slot=self._canvas.toggle_grid,
+            checkable=True,
+        )
         subplots_button = utils.create_button(
             icon="chart-line.svg",
             tooltip="Configure subplots",
@@ -258,6 +267,7 @@ class Plot(QtWidgets.QWidget):
         controls_layout.addWidget(zoom_button)
         controls_layout.addWidget(pan_button)
         controls_layout.addWidget(crosshair_button)
+        controls_layout.addWidget(grid_button)
         controls_layout.addWidget(subplots_button)
         controls_layout.addWidget(customise_button)
         controls_layout.addWidget(save_button)
@@ -289,6 +299,7 @@ class _FigureCanvas(backend.FigureCanvasQTAgg):
 
         self._cursor = None
         self._background = None
+        self._grid = None
 
     def toggle_crosshair_cursor(self):
         if self._cursor:
@@ -305,19 +316,27 @@ class _FigureCanvas(backend.FigureCanvasQTAgg):
             self._background = self.figure.canvas.copy_from_bbox(
                 self.figure.bbox
             )
-            if isinstance(self.axes, list):
+            if isinstance(self.axes, collections.abc.Iterable):
                 axes = self.axes
             else:
                 axes = [self.axes]
             self._cursor = widgets.MultiCursor(
-                None,
-                axes,
+                canvas=None,
+                axes=axes,
                 useblit=False,
                 horizOn=True,
                 vertOn=True,
                 color="red",
                 linewidth=1,
             )
+
+    def toggle_grid(self):
+        if isinstance(self.axes, collections.abc.Iterable):
+            for axes in self.axes:
+                axes.grid(visible=self._grid)
+        else:
+            self.axes.grid(visible=self._grid)
+        self.draw_idle()
 
 
 class _MainWindow(QtWidgets.QMainWindow):
@@ -326,9 +345,6 @@ class _MainWindow(QtWidgets.QMainWindow):
 
         widget = Plot()
         self.setCentralWidget(widget)
-
-        # pylint: disable=import-outside-toplevel
-        import numpy as np
 
         time = np.linspace(0, 4 * np.pi, 501)
         widget.axes.plot(time, np.sin(time), ".")
