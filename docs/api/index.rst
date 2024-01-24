@@ -18,6 +18,8 @@ An alphabetic list of the modules available within the qtbricks package. The act
     qtbricks.plot
     qtbricks.testing
     qtbricks.utils
+    qtbricks.widgets
+
 
 
 
