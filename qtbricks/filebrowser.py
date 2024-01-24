@@ -294,9 +294,10 @@ class FileBrowser(QtWidgets.QWidget):
         controls_layout.addWidget(self._back_button)
         controls_layout.addWidget(self._up_button)
         controls_layout.addWidget(self._forward_button)
-        controls_layout.addWidget(self._curdir_edit)
+        controls_layout.addStretch()
         layout = QtWidgets.QVBoxLayout()
         layout.addLayout(controls_layout)
+        layout.addWidget(self._curdir_edit)
         layout.addWidget(self._tree_view)
         self.setLayout(layout)
 
