@@ -30,7 +30,7 @@ A list of features:
 
 And to make it even more convenient for users and future-proof:
 
-* Open source project written in Python (>= 3.7)
+* Open source project written in Python (>= 3.9)
 
 * Developed fully test-driven (well, not yet...)
 

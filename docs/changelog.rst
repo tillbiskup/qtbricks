@@ -15,6 +15,20 @@ Not yet released
 * ...
 
 
+Version 0.1.0-rc3
+=================
+
+Not yet released
+
+* Third public pre-release
+
+
+New features
+------------
+
+* New module :mod:`qtbricks.widgets` containing small Qt widgets for general use with Qt GUIs.
+
+
 Version 0.1.0-rc2
 =================
 
